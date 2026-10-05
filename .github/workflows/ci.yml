@@ -36,8 +36,8 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     env:
-      CLAUDIO_TTS_HOME: ${{ runner.temp }}/ct-home
-      CLAUDE_CONFIG_DIR: ${{ runner.temp }}/ct-claude
+      CLAUDIO_TTS_HOME: ${{ github.workspace }}/.ct/home
+      CLAUDE_CONFIG_DIR: ${{ github.workspace }}/.ct/claude
     steps:
       - uses: actions/checkout@v4
       - name: Install (no model) and uninstall - POSIX
