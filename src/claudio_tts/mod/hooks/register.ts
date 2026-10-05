@@ -26,10 +26,10 @@ async function python($: Dollar) {
   }
 }
 
-async function cli($: Dollar, args: string[], input?: string) {
+async function cli($: Dollar, args: string[], stdin?: string) {
   const exe = await python($)
   try {
-    return await $.process.run([exe, '-m', 'claudio_tts', ...args], { input, timeoutMs: 15000 })
+    return await $.process.run([exe, '-m', 'claudio_tts', ...args], { stdin, timeoutMs: 15000 })
   } catch (error) {
     $.ui.log(`claudio-tts: ${String(error)}`, { to: 'debug' })
     return undefined

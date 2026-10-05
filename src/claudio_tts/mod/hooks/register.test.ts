@@ -81,3 +81,23 @@ test('a new session starts muted until it is unmuted or the default changes', as
   expect(((await run('status')) as { text: string }).text).toContain('TTS on')
   expect(((await run('mute')) as { text: string }).text).toContain('TTS muted')
 })
+
+test('a finished answer is handed to the speak command on stdin', async ($, on) => {
+  mock.store(on)
+  mock.env(on, { CLAUDIO_TTS_PYTHON: '/py' })
+  const calls: { argv: readonly string[]; stdin?: string }[] = []
+  on('process.run', async (_$, e) => {
+    calls.push({ argv: e.argv, stdin: e.init?.stdin })
+    return {
+      value: { exitCode: 0, stdout: '', stderr: '', isStdoutTruncated: false, isStderrTruncated: false },
+    }
+  })
+  on('turn.complete', (_$, e) => ({ text: e.answer }))
+  const run = (args: string) =>
+    $.command.run({ command: 'tts', args, origin: { kind: 'composer' }, presentation: { layout: 'main', columns: 80 } } as never)
+  await run('unmute')
+  await $.turn.complete({ answer: 'Hello **world**', durationMs: 1, isAborted: false, turnId: 't1', reason: 'answer' } as never)
+  const spoke = calls.find(c => c.argv.includes('speak'))
+  expect(spoke?.argv.slice(0, 3)).toEqual(['/py', '-m', 'claudio_tts'])
+  expect(spoke?.stdin).toBe('Hello **world**')
+})

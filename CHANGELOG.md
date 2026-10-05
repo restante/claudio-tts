@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.1
+
+- Fix: replies were never spoken because the mod passed the text to `$.process.run` as `input` instead of `stdin`.
+  Added a regression test that checks the answer reaches the speak command.
+
 ## 0.1.0
 
 First release.
