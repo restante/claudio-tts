@@ -12,7 +12,7 @@ import {
 
 const MIN_NARRATION = 10
 const USAGE =
-  'Usage: /tts [mute|unmute|status|default on|off|volume 1-10|speed 0.5-1.5|voice <name>|device <names|all|default>|mic <name|default>]'
+  'Usage: /tts [mute|unmute|status|default on|off|volume 1-10|speed 0.5-1.5|voice <name>|lang <code|auto>|device <names|all|default>|mic <name|default>]'
 
 type Dollar = Parameters<Hook<'turn.start'>>[0]
 
@@ -54,6 +54,7 @@ async function speak($: Dollar, text: string) {
   const speed = Number((await $.store.get('speed')) ?? DEFAULT_SPEED)
   const devices = String((await $.store.get('devices')) ?? 'default')
   const voice = String((await $.store.get('voice')) ?? '')
+  const lang = String((await $.store.get('lang')) ?? '')
   await cli(
     $,
     [
@@ -63,6 +64,7 @@ async function speak($: Dollar, text: string) {
       '--speed', String(speed),
       '--devices', devices,
       ...(voice ? ['--voice', voice] : []),
+      ...(lang ? ['--lang', lang] : []),
     ],
     text,
   )
@@ -130,6 +132,26 @@ export const register: Register = on => {
       return { text: `New sessions will start ${cmd.value === 'off' ? 'muted' : 'speaking'}` }
     }
 
+    if (cmd.kind === 'lang') {
+      const current = String((await $.store.get('lang')) ?? '')
+      if (cmd.value === undefined) {
+        const listed = await cli($, ['languages'])
+        return {
+          text: `Language: ${current || 'auto (the voice\'s own)'}\n${listed?.stdout.trim() ?? '(could not list languages)'}`,
+        }
+      }
+      if (cmd.value === 'auto' || cmd.value === 'default') {
+        await $.store.delete('lang')
+        return { text: 'Language: auto (the voice\'s own)' }
+      }
+      const check = await cli($, ['languages', '--check', cmd.value])
+      if (check && check.exitCode !== 0) {
+        return { text: check.stdout.trim() || `Unknown language '${cmd.value}'. Try /tts lang to list them` }
+      }
+      await $.store.set('lang', cmd.value.toLowerCase())
+      return { text: `Language: ${cmd.value.toLowerCase()} (the current voice will read text as ${cmd.value.toLowerCase()}, with an accent if it has no native voice)` }
+    }
+
     if (cmd.kind === 'voice') {
       const current = String((await $.store.get('voice')) ?? '')
       if (cmd.value === undefined) {
@@ -179,8 +201,9 @@ export const register: Register = on => {
     const where = String((await $.store.get('devices')) ?? 'default')
     const pace = Number((await $.store.get('speed')) ?? DEFAULT_SPEED)
     const chosen = String((await $.store.get('voice')) ?? '') || 'default'
+    const reads = String((await $.store.get('lang')) ?? '') || 'auto'
     return {
-      text: `${next ? 'TTS muted' : 'TTS on'} (this session), volume ${volume}/10, speed ${pace}, voice ${chosen}, output ${where}`,
+      text: `${next ? 'TTS muted' : 'TTS on'} (this session), volume ${volume}/10, speed ${pace}, voice ${chosen}, language ${reads}, output ${where}`,
     }
   })
 

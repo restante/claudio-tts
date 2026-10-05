@@ -43,6 +43,9 @@ test('parseTtsArgs', () => {
   expect(parseTtsArgs('voices')).toEqual({ kind: 'voice' })
   expect(parseTtsArgs('voice af_bella')).toEqual({ kind: 'voice', value: 'af_bella' })
   expect(parseTtsArgs('voice DEFAULT')).toEqual({ kind: 'voice', value: 'default' })
+  expect(parseTtsArgs('lang')).toEqual({ kind: 'lang' })
+  expect(parseTtsArgs('lang DE')).toEqual({ kind: 'lang', value: 'de' })
+  expect(parseTtsArgs('language auto')).toEqual({ kind: 'lang', value: 'auto' })
   expect(parseTtsArgs('nope')).toBeUndefined()
 })
 
@@ -135,4 +138,34 @@ test('/tts voice validates through the CLI, stores the choice and passes it to s
   expect(spoke?.argv).toContain('--voice')
   expect(spoke?.argv[spoke.argv.indexOf('--voice') + 1]).toBe('af_bella')
   expect(((await run('voice default')) as { text: string }).text).toContain('reset')
+})
+
+test('/tts lang validates through the CLI, stores the code and passes it to speak', async ($, on) => {
+  mock.store(on)
+  mock.env(on, { CLAUDIO_TTS_PYTHON: '/py' })
+  const calls: { argv: readonly string[] }[] = []
+  on('process.run', async (_$, e) => {
+    calls.push({ argv: e.argv })
+    const isBad = e.argv.includes('--check') && e.argv.includes('zz')
+    return {
+      value: {
+        exitCode: isBad ? 1 : 0,
+        stdout: isBad ? "unknown language 'zz'" : '',
+        stderr: '',
+        isStdoutTruncated: false,
+        isStderrTruncated: false,
+      },
+    }
+  })
+  on('turn.complete', (_$, e) => ({ text: e.answer }))
+  const run = (args: string) =>
+    $.command.run({ command: 'tts', args, origin: { kind: 'composer' }, presentation: { layout: 'main', columns: 80 } } as never)
+  await run('unmute')
+  expect(((await run('lang zz')) as { text: string }).text).toContain('unknown language')
+  expect(((await run('lang DE')) as { text: string }).text).toContain('Language: de')
+  calls.length = 0
+  await $.turn.complete({ answer: 'Guten Tag', durationMs: 1, isAborted: false, turnId: 't3', reason: 'answer' } as never)
+  const spoke = calls.find(c => c.argv.includes('speak'))
+  expect(spoke?.argv[spoke.argv.indexOf('--lang') + 1]).toBe('de')
+  expect(((await run('lang auto')) as { text: string }).text).toContain('auto')
 })

@@ -143,6 +143,7 @@ PowerShell の `irm | iex` ではスイッチを渡せません。先に `CLAUDI
 | `/tts default on` · `/tts default off` | **新しい**セッションを読み上げ状態で始めるかどうか(`off` = ミュートで開始、これが初期設定) |
 | `/tts voice` | すべての音声を一覧表示し、現在の音声を表示 |
 | `/tts voice af_heart` | 音声を変更(新しい声で挨拶します)。`/tts voice default` で元に戻す |
+| `/tts lang de` · `/tts lang auto` | 音声にほかの言語を読ませる(140 言語のどれでも)、または音声本来の言語に戻す |
 | `/tts volume 1-10` | 音量。すべてのセッションで共通です。`/tts volume` で現在値を表示 |
 | `/tts speed 0.5-1.5` | 話す速さ(1 が標準)。`/tts pace` は別名です |
 | `/tts device` | 出力デバイスを一覧表示し、現在の選択を表示 |
@@ -175,6 +176,9 @@ Kokoro には **9 言語、54 種類の音声**があります。`/tts voice <na
 `claudio-tts voices`)で全部を一覧表示できます。音声名の最初の文字が言語、2 文字目が性別を表し、
 **claudio-tts は名前から正しい言語を自動で選びます**。
 
+> **ここにあるのは例であって、上限ではありません。** Kokoro が対応するどの音声でも使えますし、自分の音声ファイルを追加することもでき、
+> 音声は 140 言語のテキストを読み上げられます([ほかの音声や言語を使う](#-ほかの音声や言語を使う)を参照)。
+
 | | 言語 | 女性 | 男性 |
 | --- | --- | --- | --- |
 | 🇺🇸 | アメリカ英語 | `af_alloy` `af_aoede` `af_bella` `af_heart` `af_jessica` `af_kore` `af_nicole` `af_nova` `af_river` `af_sarah` `af_sky` | `am_adam` `am_echo` `am_eric` `am_fenrir` `am_liam` `am_michael` `am_onyx` `am_puck` `am_santa` |
@@ -195,20 +199,21 @@ Kokoro には **9 言語、54 種類の音声**があります。`/tts voice <na
 
 ### 🎧 音声を聴いてみよう
 
-名前をクリックすると短いサンプルが再生されます(GitHub がプレーヤーを開きます)。サンプルは Kokoro 自身が生成したものです。
+**[▶ 音声プレーヤーを開く](https://restante.github.io/claudio-tts/)** と、54 種類すべての音声を、ワンクリックの再生ボタンでブラウザ上でそのまま聴けます。
+(GitHub は README の中で音声を再生できないため、プレーヤーは小さな Web ページに置いてあります。)あるいは、下の名前をクリックして直接そのページへ飛ぶこともできます。サンプルは Kokoro 自身が生成したものです。
 
 | 音声 | 試聴 | 音声 | 試聴 |
 | --- | --- | --- | --- |
-| `af_heart` ⭐ | [▶ 再生](docs/samples/af_heart.mp3) | `bf_emma` | [▶ 再生](docs/samples/bf_emma.mp3) |
-| `af_bella` ⭐ | [▶ 再生](docs/samples/af_bella.mp3) | `bf_isabella` | [▶ 再生](docs/samples/bf_isabella.mp3) |
-| `af_nicole` | [▶ 再生](docs/samples/af_nicole.mp3) | `bm_george` | [▶ 再生](docs/samples/bm_george.mp3) |
-| `af_sarah` | [▶ 再生](docs/samples/af_sarah.mp3) | `bm_fable` | [▶ 再生](docs/samples/bm_fable.mp3) |
-| `af_sky` | [▶ 再生](docs/samples/af_sky.mp3) | `ef_dora` 🇪🇸 | [▶ 再生](docs/samples/ef_dora.mp3) |
-| `am_michael` | [▶ 再生](docs/samples/am_michael.mp3) | `ff_siwis` 🇫🇷 | [▶ 再生](docs/samples/ff_siwis.mp3) |
-| `am_fenrir` | [▶ 再生](docs/samples/am_fenrir.mp3) | `if_sara` 🇮🇹 | [▶ 再生](docs/samples/if_sara.mp3) |
-| `am_puck` | [▶ 再生](docs/samples/am_puck.mp3) | `jf_alpha` 🇯🇵 | [▶ 再生](docs/samples/jf_alpha.mp3) |
-| `hf_alpha` 🇮🇳 | [▶ 再生](docs/samples/hf_alpha.mp3) | `zf_xiaoxiao` 🇨🇳 | [▶ 再生](docs/samples/zf_xiaoxiao.mp3) |
-| `pf_dora` 🇧🇷 | [▶ 再生](docs/samples/pf_dora.mp3) | | |
+| `af_heart` ⭐ | [▶ 聴く](https://restante.github.io/claudio-tts/#af_heart) | `bf_emma` | [▶ 聴く](https://restante.github.io/claudio-tts/#bf_emma) |
+| `af_bella` ⭐ | [▶ 聴く](https://restante.github.io/claudio-tts/#af_bella) | `bf_isabella` | [▶ 聴く](https://restante.github.io/claudio-tts/#bf_isabella) |
+| `af_nicole` | [▶ 聴く](https://restante.github.io/claudio-tts/#af_nicole) | `bm_george` | [▶ 聴く](https://restante.github.io/claudio-tts/#bm_george) |
+| `af_sarah` | [▶ 聴く](https://restante.github.io/claudio-tts/#af_sarah) | `bm_fable` | [▶ 聴く](https://restante.github.io/claudio-tts/#bm_fable) |
+| `af_sky` | [▶ 聴く](https://restante.github.io/claudio-tts/#af_sky) | `ef_dora` 🇪🇸 | [▶ 聴く](https://restante.github.io/claudio-tts/#ef_dora) |
+| `am_michael` | [▶ 聴く](https://restante.github.io/claudio-tts/#am_michael) | `ff_siwis` 🇫🇷 | [▶ 聴く](https://restante.github.io/claudio-tts/#ff_siwis) |
+| `am_fenrir` | [▶ 聴く](https://restante.github.io/claudio-tts/#am_fenrir) | `if_sara` 🇮🇹 | [▶ 聴く](https://restante.github.io/claudio-tts/#if_sara) |
+| `am_puck` | [▶ 聴く](https://restante.github.io/claudio-tts/#am_puck) | `jf_alpha` 🇯🇵 | [▶ 聴く](https://restante.github.io/claudio-tts/#jf_alpha) |
+| `hf_alpha` 🇮🇳 | [▶ 聴く](https://restante.github.io/claudio-tts/#hf_alpha) | `zf_xiaoxiao` 🇨🇳 | [▶ 聴く](https://restante.github.io/claudio-tts/#zf_xiaoxiao) |
+| `pf_dora` 🇧🇷 | [▶ 聴く](https://restante.github.io/claudio-tts/#pf_dora) | | |
 
 ⭐ `af_heart` と `af_bella` は、英語の音声の中でもとくに自然だと言われています。まずはここから試してみてください。
 
@@ -222,6 +227,29 @@ Kokoro には **9 言語、54 種類の音声**があります。`/tts voice <na
 - **もう少し静かに?** `/tts volume 4`。音量はサンプルごとに適用されるので、システムの音量には影響しません。
 - セッションの最初の 1 文は、モデルを読み込むため少し時間がかかることがあります。2 文目以降は速いです。`--lite`
   モデルは起動が速く、メモリ使用量も少なめです。
+
+### 🔧 ほかの音声や言語を使う
+
+組み込みの 54 種類の音声と 9 つのネイティブ言語は、標準で付いてくる分にすぎません。
+
+```text
+/tts voice af_mix                # a voice you added (a .npy file in the voices folder)
+/tts lang de                     # read German (or any of 140 languages) through the current voice
+/tts lang auto                   # back to the voice's own language
+```
+
+```json
+{ "env": { "CLAUDIO_TTS_MODEL": "/path/to/model.onnx", "CLAUDIO_TTS_VOICES": "/path/to/voices.bin" } }
+```
+
+- **自分の音声を追加する**: Kokoro のスタイルベクトルをインストールフォルダの `voices/<name>.npy` として保存すると、`<name>` が
+  `/tts voice` に現れます。2 つの音声をブレンドして新しい音声を作ることもできます。
+- **別の Kokoro モデルや音声パックを使う**(新しいリリースやコミュニティのパックなど): 上の 2 つの環境変数を
+  `~/.claude/settings.json` に設定します。
+- **どんな言語でも読む**: `/tts lang <code>` で、現在の音声にその言語を読ませられます(140 個のコード。`claudio-tts languages`
+  を参照)。ネイティブな音声がない言語は、なまりのある読み上げになります。
+
+ブレンド用スクリプト付きのステップバイステップ解説はこちら: **[docs/voices.md](docs/voices.md)**。
 
 ---
 
@@ -303,6 +331,7 @@ mod はモデルのテキストとツール呼び出しを監視し、セッシ�
 | 変数 | 既定値 | 意味 |
 | --- | --- | --- |
 | `KOKORO_VOICE` | `af_sky` | すべてのセッションの既定の音声([音声](#%EF%B8%8F-音声)を参照) |
+| `CLAUDIO_TTS_MODEL`, `CLAUDIO_TTS_VOICES` | 組み込み | 別の Kokoro モデル / 音声パックを使う(両方必須) |
 | `AUDIO_DUCK_ENABLED` | `true` | 話している間、Apple Music / Spotify の音量を下げる(macOS のみ) |
 | `DUCK_LEVEL` | `5` | 元の音楽の音量に対して、何パーセントまで下げるか |
 | `CLAUDIO_TTS_HOME` | OS ごと | インストール先 |
@@ -313,7 +342,8 @@ mod はモデルのテキストとツール呼び出しを監視し、セッシ�
 
 ```text
 claudio-tts say "Hello there" --voice bf_emma   speak now and wait
-claudio-tts voices                              list all 54 voices
+claudio-tts voices                              list all voices (the 54 built-in plus yours)
+claudio-tts languages                           list the 140 languages a voice can read
 claudio-tts devices [--inputs]                  list audio devices
 claudio-tts doctor [--speak | --report]         check the install, or write a bug report
 claudio-tts download-model [--lite]             fetch and verify the voice files

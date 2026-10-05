@@ -145,6 +145,7 @@ PowerShell के `irm | iex` के साथ आप switches नहीं द�
 | `/tts default on` · `/tts default off` | **नए** sessions बोलना शुरू करें या नहीं (`off` = mute से शुरू, यही default है) |
 | `/tts voice` | हर आवाज़ की सूची देता है और मौजूदा आवाज़ दिखाता है |
 | `/tts voice af_heart` | आवाज़ बदलता है (नई आवाज़ में hello बोलता है)। `/tts voice default` इसे reset करता है |
+| `/tts lang de` · `/tts lang auto` | आवाज़ से कोई दूसरी भाषा पढ़वाइए (140 में से कोई भी), या उसकी अपनी भाषा पर लौटिए |
 | `/tts volume 1-10` | आवाज़ की तेज़ी, सभी sessions में साझा। `/tts volume` इसे दिखाता है |
 | `/tts speed 0.5-1.5` | बोलने की रफ़्तार (1 सामान्य है)। `/tts pace` इसका alias है |
 | `/tts device` | output devices की सूची देता है और मौजूदा चुनाव दिखाता है |
@@ -178,6 +179,9 @@ Kokoro **9 भाषाओं में 54 आवाज़ें** के सा
 (या terminal में `claudio-tts voices`)। आवाज़ के नाम का पहला अक्षर उसकी भाषा है और दूसरा उसका
 लिंग, और **claudio-tts नाम से सही भाषा अपने आप चुन लेता है**।
 
+> **ये सिर्फ़ उदाहरण हैं, सीमा नहीं।** Kokoro जो भी आवाज़ सपोर्ट करता है वह इस्तेमाल हो सकती है, आप अपनी voice files जोड़ सकते हैं,
+> और एक आवाज़ 140 भाषाओं का text पढ़ सकती है (देखिए [अन्य कोई भी आवाज़ या भाषा इस्तेमाल करें](#-अन्य-कोई-भी-आवाज़-या-भाषा-इस्तेमाल-करें))।
+
 | | भाषा | महिला | पुरुष |
 | --- | --- | --- | --- |
 | 🇺🇸 | अमेरिकी अंग्रेज़ी | `af_alloy` `af_aoede` `af_bella` `af_heart` `af_jessica` `af_kore` `af_nicole` `af_nova` `af_river` `af_sarah` `af_sky` | `am_adam` `am_echo` `am_eric` `am_fenrir` `am_liam` `am_michael` `am_onyx` `am_puck` `am_santa` |
@@ -192,7 +196,7 @@ Kokoro **9 भाषाओं में 54 आवाज़ें** के सा
 
 > **हिन्दी के पाठकों के लिए खुशखबरी:** हिन्दी Kokoro की **native भाषाओं** में से एक है! आपके पास चार असली हिन्दी आवाज़ें हैं,
 > `hf_alpha` और `hf_beta` (महिला), `hm_omega` और `hm_psi` (पुरुष), जो आपके हिन्दी text को सही उच्चारण और लहजे में पढ़ती हैं,
-> किसी विदेशी accent के बिना। शुरुआत के लिए `hf_alpha` का [सैंपल सुनिए](docs/samples/hf_alpha.mp3), फिर
+> किसी विदेशी accent के बिना। शुरुआत के लिए `hf_alpha` का [सैंपल सुनिए](https://restante.github.io/claudio-tts/#hf_alpha), फिर
 > `/tts voice hf_alpha` चलाइए।
 
 > **जर्मन, पोलिश और रूसी:** Kokoro में अभी जर्मन, पोलिश या रूसी की कोई native आवाज़ नहीं है। installer, commands और यह
@@ -203,20 +207,22 @@ Kokoro **9 भाषाओं में 54 आवाज़ें** के सा
 
 ### 🎧 आवाज़ें सुनें
 
-किसी नाम पर क्लिक करके छोटा सैंपल चलाइए (GitHub एक player खोलता है)। सैंपल खुद Kokoro ने बनाए हैं।
+**[▶ Voice player खोलिए](https://restante.github.io/claudio-tts/)** और सभी 54 आवाज़ें सीधे अपने
+browser में सुनिए, एक क्लिक वाले play बटनों के साथ। (GitHub, README के अंदर audio नहीं चला सकता, इसलिए player एक छोटे
+web page पर है।) या नीचे किसी नाम पर क्लिक करके सीधे उसी तक पहुँचिए। सैंपल खुद Kokoro ने बनाए हैं।
 
 | आवाज़ | सुनें | आवाज़ | सुनें |
 | --- | --- | --- | --- |
-| `af_heart` ⭐ | [▶ play](docs/samples/af_heart.mp3) | `bf_emma` | [▶ play](docs/samples/bf_emma.mp3) |
-| `af_bella` ⭐ | [▶ play](docs/samples/af_bella.mp3) | `bf_isabella` | [▶ play](docs/samples/bf_isabella.mp3) |
-| `af_nicole` | [▶ play](docs/samples/af_nicole.mp3) | `bm_george` | [▶ play](docs/samples/bm_george.mp3) |
-| `af_sarah` | [▶ play](docs/samples/af_sarah.mp3) | `bm_fable` | [▶ play](docs/samples/bm_fable.mp3) |
-| `af_sky` | [▶ play](docs/samples/af_sky.mp3) | `ef_dora` 🇪🇸 | [▶ play](docs/samples/ef_dora.mp3) |
-| `am_michael` | [▶ play](docs/samples/am_michael.mp3) | `ff_siwis` 🇫🇷 | [▶ play](docs/samples/ff_siwis.mp3) |
-| `am_fenrir` | [▶ play](docs/samples/am_fenrir.mp3) | `if_sara` 🇮🇹 | [▶ play](docs/samples/if_sara.mp3) |
-| `am_puck` | [▶ play](docs/samples/am_puck.mp3) | `jf_alpha` 🇯🇵 | [▶ play](docs/samples/jf_alpha.mp3) |
-| `hf_alpha` 🇮🇳 | [▶ play](docs/samples/hf_alpha.mp3) | `zf_xiaoxiao` 🇨🇳 | [▶ play](docs/samples/zf_xiaoxiao.mp3) |
-| `pf_dora` 🇧🇷 | [▶ play](docs/samples/pf_dora.mp3) | | |
+| `af_heart` ⭐ | [▶ सुनें](https://restante.github.io/claudio-tts/#af_heart) | `bf_emma` | [▶ सुनें](https://restante.github.io/claudio-tts/#bf_emma) |
+| `af_bella` ⭐ | [▶ सुनें](https://restante.github.io/claudio-tts/#af_bella) | `bf_isabella` | [▶ सुनें](https://restante.github.io/claudio-tts/#bf_isabella) |
+| `af_nicole` | [▶ सुनें](https://restante.github.io/claudio-tts/#af_nicole) | `bm_george` | [▶ सुनें](https://restante.github.io/claudio-tts/#bm_george) |
+| `af_sarah` | [▶ सुनें](https://restante.github.io/claudio-tts/#af_sarah) | `bm_fable` | [▶ सुनें](https://restante.github.io/claudio-tts/#bm_fable) |
+| `af_sky` | [▶ सुनें](https://restante.github.io/claudio-tts/#af_sky) | `ef_dora` 🇪🇸 | [▶ सुनें](https://restante.github.io/claudio-tts/#ef_dora) |
+| `am_michael` | [▶ सुनें](https://restante.github.io/claudio-tts/#am_michael) | `ff_siwis` 🇫🇷 | [▶ सुनें](https://restante.github.io/claudio-tts/#ff_siwis) |
+| `am_fenrir` | [▶ सुनें](https://restante.github.io/claudio-tts/#am_fenrir) | `if_sara` 🇮🇹 | [▶ सुनें](https://restante.github.io/claudio-tts/#if_sara) |
+| `am_puck` | [▶ सुनें](https://restante.github.io/claudio-tts/#am_puck) | `jf_alpha` 🇯🇵 | [▶ सुनें](https://restante.github.io/claudio-tts/#jf_alpha) |
+| `hf_alpha` 🇮🇳 | [▶ सुनें](https://restante.github.io/claudio-tts/#hf_alpha) | `zf_xiaoxiao` 🇨🇳 | [▶ सुनें](https://restante.github.io/claudio-tts/#zf_xiaoxiao) |
+| `pf_dora` 🇧🇷 | [▶ सुनें](https://restante.github.io/claudio-tts/#pf_dora) | | |
 
 ⭐ `af_heart` और `af_bella` को आम तौर पर सबसे natural अंग्रेज़ी आवाज़ें माना जाता है; वहीं से शुरू कीजिए।
 
@@ -230,6 +236,29 @@ Kokoro **9 भाषाओं में 54 आवाज़ें** के सा
 - **आवाज़ कम चाहिए?** `/tts volume 4`। Volume हर sample पर लागू होता है, इसलिए यह आपके system volume को नहीं छूता।
 - session का पहला वाक्य model load होने तक थोड़ा समय ले सकता है; बाद वाले तेज़ होते हैं। `--lite`
   model जल्दी शुरू होता है और कम memory लेता है।
+
+### 🔧 अन्य कोई भी आवाज़ या भाषा इस्तेमाल करें
+
+बॉक्स में आने वाली 54 आवाज़ें और 9 native भाषाएँ तो बस शुरुआत हैं:
+
+```text
+/tts voice af_mix                # a voice you added (a .npy file in the voices folder)
+/tts lang de                     # read German (or any of 140 languages) through the current voice
+/tts lang auto                   # back to the voice's own language
+```
+
+```json
+{ "env": { "CLAUDIO_TTS_MODEL": "/path/to/model.onnx", "CLAUDIO_TTS_VOICES": "/path/to/voices.bin" } }
+```
+
+- **अपनी आवाज़ जोड़िए**: install folder में `voices/<name>.npy` के रूप में एक Kokoro style vector सेव कीजिए, और `<name>`
+  `/tts voice` में दिखने लगेगा। आप दो आवाज़ें मिलाकर एक नई आवाज़ भी बना सकते हैं।
+- **कोई दूसरा Kokoro model या voices pack इस्तेमाल कीजिए** (नया release, या community pack): ऊपर के दोनों environment
+  variables `~/.claude/settings.json` में set कीजिए।
+- **कोई भी भाषा पढ़वाइए**: `/tts lang <code>` मौजूदा आवाज़ से उस भाषा का text पढ़वाता है (140 codes, देखिए
+  `claudio-tts languages`)। जिन भाषाओं की native आवाज़ नहीं है, वे accent के साथ पढ़ी जाती हैं।
+
+चरण-दर-चरण, blending script के साथ: **[docs/voices.md](docs/voices.md)**।
 
 ---
 
@@ -313,6 +342,7 @@ Environment variables (इन्हें `~/.claude/settings.json` के `env`
 | `KOKORO_VOICE` | `af_sky` | हर session के लिए default आवाज़ (देखिए [आवाज़ें](#%EF%B8%8F-आवाज़ें)) |
 | `AUDIO_DUCK_ENABLED` | `true` | बोलते समय Apple Music / Spotify की आवाज़ कम करता है (सिर्फ़ macOS) |
 | `DUCK_LEVEL` | `5` | संगीत की मूल आवाज़ का कितने प्रतिशत तक कम करना है |
+| `CLAUDIO_TTS_MODEL`, `CLAUDIO_TTS_VOICES` | built-in | कोई दूसरा Kokoro model / voices pack इस्तेमाल कीजिए (दोनों ज़रूरी) |
 | `CLAUDIO_TTS_HOME` | OS के अनुसार | install कहाँ रहता है |
 
 ## 💻 Command line
@@ -321,7 +351,8 @@ Environment variables (इन्हें `~/.claude/settings.json` के `env`
 
 ```text
 claudio-tts say "Hello there" --voice bf_emma   speak now and wait
-claudio-tts voices                              list all 54 voices
+claudio-tts voices                              list all voices (the 54 built-in plus yours)
+claudio-tts languages                           list the 140 languages a voice can read
 claudio-tts devices [--inputs]                  list audio devices
 claudio-tts doctor [--speak | --report]         check the install, or write a bug report
 claudio-tts download-model [--lite]             fetch and verify the voice files

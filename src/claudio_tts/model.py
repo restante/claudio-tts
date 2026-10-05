@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import os
 import shutil
 import sys
 import urllib.request
@@ -54,8 +55,28 @@ def verified(path: Path, spec: ModelFile) -> bool:
     return path.is_file() and path.stat().st_size == spec.size and sha256(path) == spec.sha256
 
 
+def override() -> tuple[Path, Path] | None:
+    """A model and voices file chosen with CLAUDIO_TTS_MODEL and CLAUDIO_TTS_VOICES (both required).
+
+    This is how to use any other Kokoro-compatible model or voices pack. Not checksum-verified:
+    you picked the files, so you vouch for them.
+    """
+    model_path, voices_path = (
+        os.environ.get("CLAUDIO_TTS_MODEL"),
+        os.environ.get("CLAUDIO_TTS_VOICES"),
+    )
+    if model_path and voices_path:
+        pair = (Path(model_path).expanduser(), Path(voices_path).expanduser())
+        if pair[0].is_file() and pair[1].is_file():
+            return pair
+    return None
+
+
 def find() -> tuple[Path, Path] | None:
-    """(model, voices) if a verified pair is installed; the full model wins over the lite one."""
+    """(model, voices) to use: an override if set, else a verified pair (full model beats lite)."""
+    chosen = override()
+    if chosen is not None:
+        return chosen
     voices = model_dir() / VOICES.name
     if not verified(voices, VOICES):
         return None

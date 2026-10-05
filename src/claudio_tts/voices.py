@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import re
 from collections import defaultdict
+from pathlib import Path
 
-from claudio_tts import model
+from claudio_tts import model, paths
 
 # First letter of a voice name is its language, second letter its gender (f/m).
 LANGUAGES = {
@@ -31,15 +32,39 @@ def looks_valid(voice: str) -> bool:
     return bool(_NAME.match(voice)) and voice[:1] in LANGUAGES and voice[1:2] in ("f", "m")
 
 
+def extras_dir() -> Path:
+    """Drop `<name>.npy` style-vector files here to add your own voices (see docs/voices.md)."""
+    return paths.data_dir() / "voices"
+
+
+def extras() -> dict[str, Path]:
+    folder = extras_dir()
+    return {p.stem: p for p in sorted(folder.glob("*.npy"))} if folder.is_dir() else {}
+
+
 def available() -> list[str]:
-    """Every voice shipped in the installed voices file, sorted. Empty if the model is missing."""
+    """Every usable voice: the ones in the voices file plus your own extras, sorted.
+
+    Empty if the model is missing.
+    """
     found = model.find()
     if found is None:
         return []
     import numpy as np
 
     with np.load(found[1], allow_pickle=True) as data:
-        return sorted(data.files)
+        names = set(data.files)
+    return sorted(names | set(extras()))
+
+
+def resolve(name: str):
+    """What to hand to Kokoro for `name`: the name itself, or the style array of an extra voice."""
+    path = extras().get(name)
+    if path is None:
+        return name
+    import numpy as np
+
+    return np.load(path).astype("float32")
 
 
 def grouped(names: list[str]) -> dict[str, list[str]]:

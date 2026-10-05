@@ -138,6 +138,7 @@ irm https://raw.githubusercontent.com/restante/claudio-tts/main/install.ps1 | ie
 | `/tts default on` · `/tts default off` | **新**会话是否默认开口说话(`off` = 默认静音,这是默认值) |
 | `/tts voice` | 列出所有声音,并显示当前使用的 |
 | `/tts voice af_heart` | 更换声音(它会用新声音向你问好)。`/tts voice default` 可重置 |
+| `/tts lang de` · `/tts lang auto` | 让声音朗读另一种语言(140 种任选),或恢复为它自己的语言 |
 | `/tts volume 1-10` | 响度,所有会话共用。`/tts volume` 可查看当前值 |
 | `/tts speed 0.5-1.5` | 说话节奏(1 为正常)。`/tts pace` 是它的别名 |
 | `/tts device` | 列出输出设备,并显示当前选择 |
@@ -170,6 +171,9 @@ Kokoro 自带 **9 种语言的 54 种声音**。用 `/tts voice <name>` 选一�
 (在终端里用 `claudio-tts voices`)。声音名称的第一个字母代表语言,第二个字母代表性别,
 **claudio-tts 会根据名称自动选择正确的语言**。
 
+> **这些只是示例,不是限制。** Kokoro 支持的任何声音都可以使用,你还可以添加自己的声音文件,
+> 而且一种声音可以朗读 140 种语言的文本(见[使用其他声音或语言](#-使用其他声音或语言))。
+
 | | 语言 | 女声 | 男声 |
 | --- | --- | --- | --- |
 | 🇺🇸 | 美式英语 | `af_alloy` `af_aoede` `af_bella` `af_heart` `af_jessica` `af_kore` `af_nicole` `af_nova` `af_river` `af_sarah` `af_sky` | `am_adam` `am_echo` `am_eric` `am_fenrir` `am_liam` `am_michael` `am_onyx` `am_puck` `am_santa` |
@@ -189,20 +193,20 @@ Kokoro 自带 **9 种语言的 54 种声音**。用 `/tts voice <name>` 选一�
 
 ### 🎧 听听这些声音
 
-点击名称即可播放一小段示例(GitHub 会打开播放器)。示例由 Kokoro 本身生成。
+**[▶ 打开语音播放器](https://restante.github.io/claudio-tts/)**,直接在浏览器里一键试听全部 54 种声音。(GitHub 无法在 README 里播放音频,所以播放器放在了一个小网页上。)也可以点击下面的名称,直接跳到对应的声音。示例由 Kokoro 本身生成。
 
 | 声音 | 试听 | 声音 | 试听 |
 | --- | --- | --- | --- |
-| `af_heart` ⭐ | [▶ 播放](docs/samples/af_heart.mp3) | `bf_emma` | [▶ 播放](docs/samples/bf_emma.mp3) |
-| `af_bella` ⭐ | [▶ 播放](docs/samples/af_bella.mp3) | `bf_isabella` | [▶ 播放](docs/samples/bf_isabella.mp3) |
-| `af_nicole` | [▶ 播放](docs/samples/af_nicole.mp3) | `bm_george` | [▶ 播放](docs/samples/bm_george.mp3) |
-| `af_sarah` | [▶ 播放](docs/samples/af_sarah.mp3) | `bm_fable` | [▶ 播放](docs/samples/bm_fable.mp3) |
-| `af_sky` | [▶ 播放](docs/samples/af_sky.mp3) | `ef_dora` 🇪🇸 | [▶ 播放](docs/samples/ef_dora.mp3) |
-| `am_michael` | [▶ 播放](docs/samples/am_michael.mp3) | `ff_siwis` 🇫🇷 | [▶ 播放](docs/samples/ff_siwis.mp3) |
-| `am_fenrir` | [▶ 播放](docs/samples/am_fenrir.mp3) | `if_sara` 🇮🇹 | [▶ 播放](docs/samples/if_sara.mp3) |
-| `am_puck` | [▶ 播放](docs/samples/am_puck.mp3) | `jf_alpha` 🇯🇵 | [▶ 播放](docs/samples/jf_alpha.mp3) |
-| `hf_alpha` 🇮🇳 | [▶ 播放](docs/samples/hf_alpha.mp3) | `zf_xiaoxiao` 🇨🇳 | [▶ 播放](docs/samples/zf_xiaoxiao.mp3) |
-| `pf_dora` 🇧🇷 | [▶ 播放](docs/samples/pf_dora.mp3) | | |
+| `af_heart` ⭐ | [▶ 试听](https://restante.github.io/claudio-tts/#af_heart) | `bf_emma` | [▶ 试听](https://restante.github.io/claudio-tts/#bf_emma) |
+| `af_bella` ⭐ | [▶ 试听](https://restante.github.io/claudio-tts/#af_bella) | `bf_isabella` | [▶ 试听](https://restante.github.io/claudio-tts/#bf_isabella) |
+| `af_nicole` | [▶ 试听](https://restante.github.io/claudio-tts/#af_nicole) | `bm_george` | [▶ 试听](https://restante.github.io/claudio-tts/#bm_george) |
+| `af_sarah` | [▶ 试听](https://restante.github.io/claudio-tts/#af_sarah) | `bm_fable` | [▶ 试听](https://restante.github.io/claudio-tts/#bm_fable) |
+| `af_sky` | [▶ 试听](https://restante.github.io/claudio-tts/#af_sky) | `ef_dora` 🇪🇸 | [▶ 试听](https://restante.github.io/claudio-tts/#ef_dora) |
+| `am_michael` | [▶ 试听](https://restante.github.io/claudio-tts/#am_michael) | `ff_siwis` 🇫🇷 | [▶ 试听](https://restante.github.io/claudio-tts/#ff_siwis) |
+| `am_fenrir` | [▶ 试听](https://restante.github.io/claudio-tts/#am_fenrir) | `if_sara` 🇮🇹 | [▶ 试听](https://restante.github.io/claudio-tts/#if_sara) |
+| `am_puck` | [▶ 试听](https://restante.github.io/claudio-tts/#am_puck) | `jf_alpha` 🇯🇵 | [▶ 试听](https://restante.github.io/claudio-tts/#jf_alpha) |
+| `hf_alpha` 🇮🇳 | [▶ 试听](https://restante.github.io/claudio-tts/#hf_alpha) | `zf_xiaoxiao` 🇨🇳 | [▶ 试听](https://restante.github.io/claudio-tts/#zf_xiaoxiao) |
+| `pf_dora` 🇧🇷 | [▶ 试听](https://restante.github.io/claudio-tts/#pf_dora) | | |
 
 ⭐ `af_heart` 和 `af_bella` 普遍被认为是最自然的英语声音,建议从它们开始。
 
@@ -215,6 +219,28 @@ Kokoro 自带 **9 种语言的 54 种声音**。用 `/tts voice <name>` 选一�
 - **太快或太慢?** `/tts speed 0.85` 放慢,`/tts speed 1.2` 加快。
 - **想小声一点?** `/tts volume 4`。音量是按每段音频单独应用的,所以不会影响你的系统音量。
 - 会话里的第一句话可能要等模型加载一会儿,之后就很快了。`--lite` 模型启动更快,占用内存也更少。
+
+### 🔧 使用其他声音或语言
+
+内置的 54 种声音和 9 种原生语言,只是开箱即用的部分:
+
+```text
+/tts voice af_mix                # a voice you added (a .npy file in the voices folder)
+/tts lang de                     # read German (or any of 140 languages) through the current voice
+/tts lang auto                   # back to the voice's own language
+```
+
+```json
+{ "env": { "CLAUDIO_TTS_MODEL": "/path/to/model.onnx", "CLAUDIO_TTS_VOICES": "/path/to/voices.bin" } }
+```
+
+- **添加你自己的声音**:把 Kokoro 风格向量保存为安装目录下的 `voices/<name>.npy`,`<name>`
+  就会出现在 `/tts voice` 中。你甚至可以把两种声音混合成一种新声音。
+- **使用其他 Kokoro 模型或声音包**(更新的版本、社区声音包):在 `~/.claude/settings.json` 中设置上面两个环境变量。
+- **朗读任意语言**:`/tts lang <code>` 会让当前声音朗读该语言(共 140 个语言代码,见
+  `claudio-tts languages`)。没有原生声音的语言会带着口音朗读。
+
+分步说明及混合脚本见:**[docs/voices.md](docs/voices.md)**。
 
 ---
 
@@ -293,6 +319,7 @@ mod 监听模型的文本和工具调用,跟踪每个会话的静音状态,并�
 | 变量 | 默认值 | 含义 |
 | --- | --- | --- |
 | `KOKORO_VOICE` | `af_sky` | 所有会话的默认声音(见[语音](#%EF%B8%8F-语音)) |
+| `CLAUDIO_TTS_MODEL`、`CLAUDIO_TTS_VOICES` | 内置 | 使用其他 Kokoro 模型 / 声音包(两者都必须设置) |
 | `AUDIO_DUCK_ENABLED` | `true` | 朗读时降低 Apple Music / Spotify 的音量(仅限 macOS) |
 | `DUCK_LEVEL` | `5` | 把音乐压低到原音量的百分之几 |
 | `CLAUDIO_TTS_HOME` | 因系统而异 | 安装所在的位置 |
@@ -303,7 +330,8 @@ mod 监听模型的文本和工具调用,跟踪每个会话的静音状态,并�
 
 ```text
 claudio-tts say "Hello there" --voice bf_emma   speak now and wait
-claudio-tts voices                              list all 54 voices
+claudio-tts voices                              list all voices (the 54 built-in plus yours)
+claudio-tts languages                           list the 140 languages a voice can read
 claudio-tts devices [--inputs]                  list audio devices
 claudio-tts doctor [--speak | --report]         check the install, or write a bug report
 claudio-tts download-model [--lite]             fetch and verify the voice files

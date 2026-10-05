@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.0
+
+- New: a **browser voice player** (GitHub Pages) with a play button for each of the 54 voices, plus samples
+  for every voice. GitHub can't play audio inside a README, so the README links to the player.
+- New: **any voice, any language.** `/tts lang <code>` makes a voice read any of 140 languages
+  (`claudio-tts languages`), your own `voices/<name>.npy` files appear in `/tts voice`, and
+  `CLAUDIO_TTS_MODEL` / `CLAUDIO_TTS_VOICES` point to another Kokoro model or voices pack.
+- Docs: new `docs/voices.md` (including how to blend two voices today); the README stresses the 54 voices
+  and 9 languages are examples, not limits.
+
 ## 0.2.0
 
 - New: `/tts voice <name>` to change the voice, `/tts voice` to list all 54 voices, `/tts voice default` to reset.

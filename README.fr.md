@@ -147,6 +147,7 @@ Tout passe par une seule commande slash dans Claude Code :
 | `/tts default on` · `/tts default off` | Indique si les **nouvelles** sessions démarrent en parlant (`off` = démarrer en muet, par défaut) |
 | `/tts voice` | Liste toutes les voix et affiche la voix actuelle |
 | `/tts voice af_heart` | Change la voix (elle te dit bonjour avec la nouvelle voix). `/tts voice default` la réinitialise |
+| `/tts lang de` · `/tts lang auto` | Fait lire une autre langue à la voix (parmi 140), ou revient à sa propre langue |
 | `/tts volume 1-10` | Le volume, partagé par toutes les sessions. `/tts volume` l'affiche |
 | `/tts speed 0.5-1.5` | Le rythme de parole (1 est normal). `/tts pace` est un alias |
 | `/tts device` | Liste les périphériques de sortie et affiche le choix actuel |
@@ -180,6 +181,10 @@ Kokoro propose **54 voix dans 9 langues**. Choisis-en une avec `/tts voice <name
 `/tts voice` (ou `claudio-tts voices` dans un terminal). La première lettre du nom d'une voix indique sa langue et
 la deuxième son genre, et **claudio-tts choisit automatiquement la bonne langue** à partir du nom.
 
+> **Ce sont des exemples, pas des limites.** Toute voix prise en charge par Kokoro peut être utilisée, tu peux
+> ajouter tes propres fichiers de voix, et une voix peut lire du texte dans 140 langues (voir
+> [Utiliser une autre voix ou une autre langue](#-utiliser-une-autre-voix-ou-une-autre-langue)).
+
 | | Langue | Féminin | Masculin |
 | --- | --- | --- | --- |
 | 🇺🇸 | Anglais américain | `af_alloy` `af_aoede` `af_bella` `af_heart` `af_jessica` `af_kore` `af_nicole` `af_nova` `af_river` `af_sarah` `af_sky` | `am_adam` `am_echo` `am_eric` `am_fenrir` `am_liam` `am_michael` `am_onyx` `am_puck` `am_santa` |
@@ -200,21 +205,23 @@ la deuxième son genre, et **claudio-tts choisit automatiquement la bonne langue
 
 ### 🎧 Écoute les voix
 
-Clique sur un nom pour lire un court échantillon (GitHub ouvre un lecteur). Les échantillons sont générés par Kokoro
-lui-même.
+**[▶ Ouvre le lecteur de voix](https://restante.github.io/claudio-tts/)** pour écouter les 54 voix directement dans
+ton navigateur, avec des boutons de lecture en un clic. (GitHub ne peut pas lire d'audio dans un README, donc le
+lecteur vit sur une petite page web.) Ou clique sur un nom ci-dessous pour y aller directement. Les échantillons sont
+générés par Kokoro lui-même.
 
 | Voix | Écouter | Voix | Écouter |
 | --- | --- | --- | --- |
-| `af_heart` ⭐ | [▶ play](docs/samples/af_heart.mp3) | `bf_emma` | [▶ play](docs/samples/bf_emma.mp3) |
-| `af_bella` ⭐ | [▶ play](docs/samples/af_bella.mp3) | `bf_isabella` | [▶ play](docs/samples/bf_isabella.mp3) |
-| `af_nicole` | [▶ play](docs/samples/af_nicole.mp3) | `bm_george` | [▶ play](docs/samples/bm_george.mp3) |
-| `af_sarah` | [▶ play](docs/samples/af_sarah.mp3) | `bm_fable` | [▶ play](docs/samples/bm_fable.mp3) |
-| `af_sky` | [▶ play](docs/samples/af_sky.mp3) | `ef_dora` 🇪🇸 | [▶ play](docs/samples/ef_dora.mp3) |
-| `am_michael` | [▶ play](docs/samples/am_michael.mp3) | `ff_siwis` 🇫🇷 | [▶ play](docs/samples/ff_siwis.mp3) |
-| `am_fenrir` | [▶ play](docs/samples/am_fenrir.mp3) | `if_sara` 🇮🇹 | [▶ play](docs/samples/if_sara.mp3) |
-| `am_puck` | [▶ play](docs/samples/am_puck.mp3) | `jf_alpha` 🇯🇵 | [▶ play](docs/samples/jf_alpha.mp3) |
-| `hf_alpha` 🇮🇳 | [▶ play](docs/samples/hf_alpha.mp3) | `zf_xiaoxiao` 🇨🇳 | [▶ play](docs/samples/zf_xiaoxiao.mp3) |
-| `pf_dora` 🇧🇷 | [▶ play](docs/samples/pf_dora.mp3) | | |
+| `af_heart` ⭐ | [▶ écouter](https://restante.github.io/claudio-tts/#af_heart) | `bf_emma` | [▶ écouter](https://restante.github.io/claudio-tts/#bf_emma) |
+| `af_bella` ⭐ | [▶ écouter](https://restante.github.io/claudio-tts/#af_bella) | `bf_isabella` | [▶ écouter](https://restante.github.io/claudio-tts/#bf_isabella) |
+| `af_nicole` | [▶ écouter](https://restante.github.io/claudio-tts/#af_nicole) | `bm_george` | [▶ écouter](https://restante.github.io/claudio-tts/#bm_george) |
+| `af_sarah` | [▶ écouter](https://restante.github.io/claudio-tts/#af_sarah) | `bm_fable` | [▶ écouter](https://restante.github.io/claudio-tts/#bm_fable) |
+| `af_sky` | [▶ écouter](https://restante.github.io/claudio-tts/#af_sky) | `ef_dora` 🇪🇸 | [▶ écouter](https://restante.github.io/claudio-tts/#ef_dora) |
+| `am_michael` | [▶ écouter](https://restante.github.io/claudio-tts/#am_michael) | `ff_siwis` 🇫🇷 | [▶ écouter](https://restante.github.io/claudio-tts/#ff_siwis) |
+| `am_fenrir` | [▶ écouter](https://restante.github.io/claudio-tts/#am_fenrir) | `if_sara` 🇮🇹 | [▶ écouter](https://restante.github.io/claudio-tts/#if_sara) |
+| `am_puck` | [▶ écouter](https://restante.github.io/claudio-tts/#am_puck) | `jf_alpha` 🇯🇵 | [▶ écouter](https://restante.github.io/claudio-tts/#jf_alpha) |
+| `hf_alpha` 🇮🇳 | [▶ écouter](https://restante.github.io/claudio-tts/#hf_alpha) | `zf_xiaoxiao` 🇨🇳 | [▶ écouter](https://restante.github.io/claudio-tts/#zf_xiaoxiao) |
+| `pf_dora` 🇧🇷 | [▶ écouter](https://restante.github.io/claudio-tts/#pf_dora) | | |
 
 ⭐ `af_heart` et `af_bella` sont généralement considérées comme les voix anglaises les plus naturelles ; commence
 par celles-ci.
@@ -231,6 +238,29 @@ par celles-ci.
   volume de ton système.
 - La première phrase d'une session peut prendre un instant le temps que le modèle se charge ; les suivantes sont
   rapides. Le modèle `--lite` démarre plus vite et consomme moins de mémoire.
+
+### 🔧 Utiliser une autre voix ou une autre langue
+
+Les 54 voix intégrées et les 9 langues natives ne sont que ce qui est fourni de base :
+
+```text
+/tts voice af_mix                # a voice you added (a .npy file in the voices folder)
+/tts lang de                     # read German (or any of 140 languages) through the current voice
+/tts lang auto                   # back to the voice's own language
+```
+
+```json
+{ "env": { "CLAUDIO_TTS_MODEL": "/path/to/model.onnx", "CLAUDIO_TTS_VOICES": "/path/to/voices.bin" } }
+```
+
+- **Ajoute ta propre voix** : enregistre un vecteur de style Kokoro sous `voices/<name>.npy` dans le dossier
+  d'installation, et `<name>` apparaît dans `/tts voice`. Tu peux même mélanger deux voix pour en créer une nouvelle.
+- **Utilise un autre modèle Kokoro ou un autre pack de voix** (une version plus récente, un pack communautaire) :
+  définis les deux variables d'environnement ci-dessus dans `~/.claude/settings.json`.
+- **Lis n'importe quelle langue** : `/tts lang <code>` fait lire cette langue par la voix actuelle (140 codes, voir
+  `claudio-tts languages`). Les langues sans voix native sont lues avec un accent.
+
+Pas à pas, avec un script de mélange : **[docs/voices.md](docs/voices.md)**.
 
 ---
 
@@ -317,6 +347,7 @@ Variables d'environnement (à mettre dans le bloc `env` de `~/.claude/settings.j
 | Variable | Par défaut | Signification |
 | --- | --- | --- |
 | `KOKORO_VOICE` | `af_sky` | Voix par défaut pour chaque session (voir [Voix](#%EF%B8%8F-voix)) |
+| `CLAUDIO_TTS_MODEL`, `CLAUDIO_TTS_VOICES` | intégrés | Utilise un autre modèle Kokoro / pack de voix (les deux sont requis) |
 | `AUDIO_DUCK_ENABLED` | `true` | Baisse Apple Music / Spotify pendant la parole (macOS uniquement) |
 | `DUCK_LEVEL` | `5` | Pourcentage du volume d'origine de la musique auquel la baisser |
 | `CLAUDIO_TTS_HOME` | selon l'OS | Où se trouve l'installation |
@@ -327,7 +358,8 @@ Le paquet installe aussi une commande `claudio-tts` (dans son environnement priv
 
 ```text
 claudio-tts say "Hello there" --voice bf_emma   speak now and wait
-claudio-tts voices                              list all 54 voices
+claudio-tts voices                              list all voices (the 54 built-in plus yours)
+claudio-tts languages                           list the 140 languages a voice can read
 claudio-tts devices [--inputs]                  list audio devices
 claudio-tts doctor [--speak | --report]         check the install, or write a bug report
 claudio-tts download-model [--lite]             fetch and verify the voice files

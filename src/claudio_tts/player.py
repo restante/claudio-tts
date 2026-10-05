@@ -63,7 +63,9 @@ async def _stream(
         raise RuntimeError("Kokoro model not installed; run `claudio-tts download-model`")
     kokoro = Kokoro(str(found[0]), str(found[1]))
     sinks: list[_Sink] | None = None
-    async for samples, rate in kokoro.create_stream(text, voice=voice, speed=speed, lang=lang):
+    async for samples, rate in kokoro.create_stream(
+        text, voice=voices.resolve(voice), speed=speed, lang=lang
+    ):
         if sinks is None:
             sinks = [_Sink(d, rate) for d in outputs]
         block = (samples * gain).astype("float32").reshape(-1, 1)

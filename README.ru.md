@@ -147,6 +147,7 @@ irm https://raw.githubusercontent.com/restante/claudio-tts/main/install.ps1 | ie
 | `/tts voice af_heart` | Сменить голос (он поздоровается новым голосом). `/tts voice default` сбрасывает выбор |
 | `/tts volume 1-10` | Громкость, общая для всех сессий. `/tts volume` показывает текущую |
 | `/tts speed 0.5-1.5` | Темп речи (1 — обычный). `/tts pace` — псевдоним |
+| `/tts lang de` · `/tts lang auto` | Заставить голос читать другой язык (любой из 140) или вернуться к его родному |
 | `/tts device` | Показать устройства вывода и текущий выбор |
 | `/tts device airpods` | Говорить на одном устройстве (достаточно части названия) |
 | `/tts device airpods,macbook` | …на нескольких устройствах **одновременно** |
@@ -178,6 +179,10 @@ Kokoro поставляется с **54 голосами на 9 языках**. 
 через `/tts voice` (или `claudio-tts voices` в терминале). Первая буква имени голоса — язык, вторая — пол, а
 **claudio-tts сам выбирает нужный язык** по имени.
 
+> **Это примеры, а не ограничения.** Можно использовать любой голос, который поддерживает Kokoro, добавлять свои
+> файлы голосов, а любой голос может читать текст на 140 языках (см.
+> [Используй любой другой голос или язык](#-используй-любой-другой-голос-или-язык)).
+
 | | Язык | Женские | Мужские |
 | --- | --- | --- | --- |
 | 🇺🇸 | Американский английский | `af_alloy` `af_aoede` `af_bella` `af_heart` `af_jessica` `af_kore` `af_nicole` `af_nova` `af_river` `af_sarah` `af_sky` | `am_adam` `am_echo` `am_eric` `am_fenrir` `am_liam` `am_michael` `am_onyx` `am_puck` `am_santa` |
@@ -200,20 +205,22 @@ Kokoro поставляется с **54 голосами на 9 языках**. 
 
 ### 🎧 Послушай голоса
 
-Нажми на имя, чтобы проиграть короткий пример (GitHub откроет плеер). Примеры сгенерированы самим Kokoro.
+**[▶ Открыть плеер голосов](https://restante.github.io/claudio-tts/)**, чтобы послушать все 54 голоса прямо в
+браузере, одним нажатием на кнопку. (GitHub не умеет проигрывать звук внутри README, поэтому плеер живёт на
+небольшой веб-странице.) Или нажми на имя ниже, чтобы сразу перейти к нему. Примеры сгенерированы самим Kokoro.
 
 | Голос | Слушать | Голос | Слушать |
 | --- | --- | --- | --- |
-| `af_heart` ⭐ | [▶ play](docs/samples/af_heart.mp3) | `bf_emma` | [▶ play](docs/samples/bf_emma.mp3) |
-| `af_bella` ⭐ | [▶ play](docs/samples/af_bella.mp3) | `bf_isabella` | [▶ play](docs/samples/bf_isabella.mp3) |
-| `af_nicole` | [▶ play](docs/samples/af_nicole.mp3) | `bm_george` | [▶ play](docs/samples/bm_george.mp3) |
-| `af_sarah` | [▶ play](docs/samples/af_sarah.mp3) | `bm_fable` | [▶ play](docs/samples/bm_fable.mp3) |
-| `af_sky` | [▶ play](docs/samples/af_sky.mp3) | `ef_dora` 🇪🇸 | [▶ play](docs/samples/ef_dora.mp3) |
-| `am_michael` | [▶ play](docs/samples/am_michael.mp3) | `ff_siwis` 🇫🇷 | [▶ play](docs/samples/ff_siwis.mp3) |
-| `am_fenrir` | [▶ play](docs/samples/am_fenrir.mp3) | `if_sara` 🇮🇹 | [▶ play](docs/samples/if_sara.mp3) |
-| `am_puck` | [▶ play](docs/samples/am_puck.mp3) | `jf_alpha` 🇯🇵 | [▶ play](docs/samples/jf_alpha.mp3) |
-| `hf_alpha` 🇮🇳 | [▶ play](docs/samples/hf_alpha.mp3) | `zf_xiaoxiao` 🇨🇳 | [▶ play](docs/samples/zf_xiaoxiao.mp3) |
-| `pf_dora` 🇧🇷 | [▶ play](docs/samples/pf_dora.mp3) | | |
+| `af_heart` ⭐ | [▶ слушать](https://restante.github.io/claudio-tts/#af_heart) | `bf_emma` | [▶ слушать](https://restante.github.io/claudio-tts/#bf_emma) |
+| `af_bella` ⭐ | [▶ слушать](https://restante.github.io/claudio-tts/#af_bella) | `bf_isabella` | [▶ слушать](https://restante.github.io/claudio-tts/#bf_isabella) |
+| `af_nicole` | [▶ слушать](https://restante.github.io/claudio-tts/#af_nicole) | `bm_george` | [▶ слушать](https://restante.github.io/claudio-tts/#bm_george) |
+| `af_sarah` | [▶ слушать](https://restante.github.io/claudio-tts/#af_sarah) | `bm_fable` | [▶ слушать](https://restante.github.io/claudio-tts/#bm_fable) |
+| `af_sky` | [▶ слушать](https://restante.github.io/claudio-tts/#af_sky) | `ef_dora` 🇪🇸 | [▶ слушать](https://restante.github.io/claudio-tts/#ef_dora) |
+| `am_michael` | [▶ слушать](https://restante.github.io/claudio-tts/#am_michael) | `ff_siwis` 🇫🇷 | [▶ слушать](https://restante.github.io/claudio-tts/#ff_siwis) |
+| `am_fenrir` | [▶ слушать](https://restante.github.io/claudio-tts/#am_fenrir) | `if_sara` 🇮🇹 | [▶ слушать](https://restante.github.io/claudio-tts/#if_sara) |
+| `am_puck` | [▶ слушать](https://restante.github.io/claudio-tts/#am_puck) | `jf_alpha` 🇯🇵 | [▶ слушать](https://restante.github.io/claudio-tts/#jf_alpha) |
+| `hf_alpha` 🇮🇳 | [▶ слушать](https://restante.github.io/claudio-tts/#hf_alpha) | `zf_xiaoxiao` 🇨🇳 | [▶ слушать](https://restante.github.io/claudio-tts/#zf_xiaoxiao) |
+| `pf_dora` 🇧🇷 | [▶ слушать](https://restante.github.io/claudio-tts/#pf_dora) | | |
 
 ⭐ `af_heart` и `af_bella` принято считать самыми естественными английскими голосами; начни с них.
 
@@ -227,6 +234,30 @@ Kokoro поставляется с **54 голосами на 9 языках**. 
 - **Хочешь потише?** `/tts volume 4`. Громкость применяется к каждому сэмплу, поэтому системная громкость не меняется.
 - Первое предложение в сессии может занять пару секунд, пока загружается модель; следующие идут быстро. Модель
   `--lite` стартует быстрее и занимает меньше памяти.
+
+### 🔧 Используй любой другой голос или язык
+
+54 встроенных голоса и 9 родных языков — это лишь то, что идёт в комплекте:
+
+```text
+/tts voice af_mix                # a voice you added (a .npy file in the voices folder)
+/tts lang de                     # read German (or any of 140 languages) through the current voice
+/tts lang auto                   # back to the voice's own language
+```
+
+```json
+{ "env": { "CLAUDIO_TTS_MODEL": "/path/to/model.onnx", "CLAUDIO_TTS_VOICES": "/path/to/voices.bin" } }
+```
+
+- **Добавь свой голос**: сохрани вектор стиля Kokoro как `voices/<name>.npy` в папке установки, и `<name>`
+  появится в `/tts voice`. Можно даже смешать два голоса в новый.
+- **Используй другую модель Kokoro или другой пакет голосов** (более новый релиз, пакет от сообщества): задай две
+  переменные окружения выше в `~/.claude/settings.json`.
+- **Читай на любом языке**: `/tts lang <code>` заставляет текущий голос читать на этом языке (140 кодов, см.
+  `claudio-tts languages`). Для русского, например, `/tts lang ru` читает русский текст через текущий голос, с
+  акцентом, потому что у языков без родного голоса он неизбежен.
+
+Пошагово, со скриптом для смешивания: **[docs/voices.md](docs/voices.md)**.
 
 ---
 
@@ -310,6 +341,7 @@ flowchart LR
 | Переменная | По умолчанию | Значение |
 | --- | --- | --- |
 | `KOKORO_VOICE` | `af_sky` | Голос по умолчанию для всех сессий (см. [Голоса](#%EF%B8%8F-голоса)) |
+| `CLAUDIO_TTS_MODEL`, `CLAUDIO_TTS_VOICES` | встроенные | Использовать другую модель Kokoro / пакет голосов (нужны оба) |
 | `AUDIO_DUCK_ENABLED` | `true` | Приглушать Apple Music / Spotify во время речи (только macOS) |
 | `DUCK_LEVEL` | `5` | До какого процента от исходной громкости музыки приглушать |
 | `CLAUDIO_TTS_HOME` | зависит от ОС | Где находится установка |
@@ -320,7 +352,8 @@ flowchart LR
 
 ```text
 claudio-tts say "Hello there" --voice bf_emma   speak now and wait
-claudio-tts voices                              list all 54 voices
+claudio-tts voices                              list all voices (the 54 built-in plus yours)
+claudio-tts languages                           list the 140 languages a voice can read
 claudio-tts devices [--inputs]                  list audio devices
 claudio-tts doctor [--speak | --report]         check the install, or write a bug report
 claudio-tts download-model [--lite]             fetch and verify the voice files

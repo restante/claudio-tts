@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "claudio-tts"
-version = "0.2.0"
+version = "0.3.0"
 description = "Spoken replies for Claude Code, powered by Kokoro. Per-session mute, volume, speed and output devices."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -38,3 +38,6 @@ src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "W", "UP", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+"scripts/make_player.py" = ["E501"]  # embedded CSS, JS and HTML

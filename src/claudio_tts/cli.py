@@ -16,6 +16,7 @@ from claudio_tts import (
     devices,
     duck,
     install_mod,
+    languages,
     markdown,
     model,
     paths,
@@ -136,6 +137,25 @@ def cmd_voices(a: argparse.Namespace) -> int:
             if row:
                 print(f"  {title}: {' '.join(row)}")
     print(f"\n{len(names)} voices. Use one with /tts voice <name>, e.g. /tts voice af_heart")
+    return 0
+
+
+def cmd_languages(a: argparse.Namespace) -> int:
+    known = languages.supported()
+    if a.check:
+        code = a.check.lower()
+        if code in known:
+            return 0
+        close = [c for c in known if c.startswith(code[:2])][:6]
+        print(
+            f"unknown language '{a.check}'"
+            + (f"; did you mean: {', '.join(close)}?" if close else "")
+        )
+        return 1
+    native = {code for code, _ in voices.LANGUAGES.values()}
+    for code, name in known.items():
+        print(f"{code:10} {name}{'  (native Kokoro voices)' if code in native else ''}")
+    print(f"\n{len(known)} languages. Read one with /tts lang <code>, e.g. /tts lang de")
     return 0
 
 
@@ -283,6 +303,10 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("voices", help="list the available voices")
     p.add_argument("--check", metavar="NAME", help="exit 0 if NAME is a real voice")
     p.set_defaults(func=cmd_voices)
+
+    p = sub.add_parser("languages", help="list every language a voice can be asked to read")
+    p.add_argument("--check", metavar="CODE", help="exit 0 if CODE is a supported language")
+    p.set_defaults(func=cmd_languages)
 
     p = sub.add_parser("download-model", help="download and verify the Kokoro model")
     p.add_argument(

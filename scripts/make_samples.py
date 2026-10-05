@@ -1,7 +1,7 @@
 """Render the short voice samples linked from the README (docs/samples/*.mp3).
 
 Needs the model (`claudio-tts download-model`) and ffmpeg. Run with the project's Python:
-    python scripts/make_samples.py [voice ...]
+    python scripts/make_samples.py [--all | voice ...]
 """
 
 from __future__ import annotations
@@ -50,7 +50,9 @@ def main() -> None:
         raise SystemExit("model missing: run `claudio-tts download-model`")
     kokoro = Kokoro(str(found[0]), str(found[1]))
     OUT.mkdir(parents=True, exist_ok=True)
-    for voice in sys.argv[1:] or DEFAULT:
+    args = sys.argv[1:]
+    chosen = voices.available() if args == ["--all"] else args or DEFAULT
+    for voice in chosen:
         audio = asyncio.run(render(kokoro, voice)).astype("float32")
         target = OUT / f"{voice}.mp3"
         subprocess.run(
