@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    name: Python (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: Install
+        run: |
+          uv venv --python 3.12
+          uv pip install -e ".[dev]"
+      - name: Lint
+        run: uv run ruff check . && uv run ruff format --check .
+      - name: Test
+        run: uv run pytest -q
+
+  installers:
+    name: Installer smoke (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    env:
+      CLAUDIO_TTS_HOME: ${{ runner.temp }}/ct-home
+      CLAUDE_CONFIG_DIR: ${{ runner.temp }}/ct-claude
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install (no model) and uninstall - POSIX
+        if: runner.os != 'Windows'
+        run: |
+          bash install.sh --local --no-model
+          test -d "$CLAUDE_CONFIG_DIR/mods/claudio-tts"
+          grep -q claudio-tts "$CLAUDE_CONFIG_DIR/settings.json"
+          bash install.sh --local --no-model
+          bash install.sh --uninstall
+          test ! -d "$CLAUDE_CONFIG_DIR/mods/claudio-tts"
+      - name: Install (no model) and uninstall - Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          ./install.ps1 -Local -NoModel
+          if (-not (Test-Path "$env:CLAUDE_CONFIG_DIR/mods/claudio-tts")) { throw 'mod not installed' }
+          ./install.ps1 -Local -NoModel
+          ./install.ps1 -Uninstall
+          if (Test-Path "$env:CLAUDE_CONFIG_DIR/mods/claudio-tts") { throw 'mod not removed' }
+      - name: shellcheck
+        if: runner.os == 'Linux'
+        run: shellcheck install.sh

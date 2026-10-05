@@ -1,0 +1,6 @@
+{
+  "name": "claudio-tts",
+  "version": "0.1.0",
+  "description": "Spoken replies for Claude Code. Per-session mute (new sessions start muted), shared volume, speed and output devices.",
+  "types": "./types/index.d.ts"
+}

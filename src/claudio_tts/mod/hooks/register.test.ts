@@ -1,0 +1,83 @@
+import { expect, mock, test } from 'claude-code/testing'
+
+import { hasSummary, parseTtsArgs, speechText } from './speech'
+
+test('speechText prefers the TTS_SUMMARY block', () => {
+  const text = 'Long answer.\n<!-- TTS_SUMMARY Short version. TTS_SUMMARY -->'
+  expect(speechText(text)).toBe('Short version.')
+  expect(hasSummary(text)).toBe(true)
+})
+
+test('speechText falls back to the whole text when the block is empty or open', () => {
+  expect(speechText('Plain reply.')).toBe('Plain reply.')
+  expect(speechText('Hi <!-- TTS_SUMMARY never closed')).toBe('Hi <!-- TTS_SUMMARY never closed')
+  expect(speechText('A <!-- TTS_SUMMARY  TTS_SUMMARY -->')).toContain('A')
+})
+
+test('parseTtsArgs', () => {
+  expect(parseTtsArgs('')).toEqual({ kind: 'toggle' })
+  expect(parseTtsArgs(' Mute ')).toEqual({ kind: 'mute' })
+  expect(parseTtsArgs('unmute')).toEqual({ kind: 'unmute' })
+  expect(parseTtsArgs('status')).toEqual({ kind: 'status' })
+  expect(parseTtsArgs('volume')).toEqual({ kind: 'volume' })
+  expect(parseTtsArgs('volume 7')).toEqual({ kind: 'volume', value: 7 })
+  expect(parseTtsArgs('volume 0')).toBeUndefined()
+  expect(parseTtsArgs('volume 11')).toBeUndefined()
+  expect(parseTtsArgs('volume 2.5')).toBeUndefined()
+  expect(parseTtsArgs('device')).toEqual({ kind: 'device' })
+  expect(parseTtsArgs('device AirPods , MacBook')).toEqual({ kind: 'device', value: 'airpods,macbook' })
+  expect(parseTtsArgs('device all')).toEqual({ kind: 'device', value: 'all' })
+  expect(parseTtsArgs('mic')).toEqual({ kind: 'mic' })
+  expect(parseTtsArgs('mic MacBook Pro Microphone (default)')).toEqual({ kind: 'mic', value: 'macbook pro microphone' })
+  expect(parseTtsArgs('speed')).toEqual({ kind: 'speed' })
+  expect(parseTtsArgs('speed 0.8')).toEqual({ kind: 'speed', value: 0.8 })
+  expect(parseTtsArgs('pace 1.25')).toEqual({ kind: 'speed', value: 1.25 })
+  expect(parseTtsArgs('speed 2')).toBeUndefined()
+  expect(parseTtsArgs('speed 0.2')).toBeUndefined()
+  expect(parseTtsArgs('speed fast')).toBeUndefined()
+  expect(parseTtsArgs('default')).toEqual({ kind: 'default' })
+  expect(parseTtsArgs('default on')).toEqual({ kind: 'default', value: 'on' })
+  expect(parseTtsArgs('default off')).toEqual({ kind: 'default', value: 'off' })
+  expect(parseTtsArgs('default maybe')).toBeUndefined()
+  expect(parseTtsArgs('nope')).toBeUndefined()
+})
+
+test('/tts mutes, persists and unmutes', async ($, on) => {
+  mock.store(on)
+  const run = (args: string) =>
+    $.command.run({ command: 'tts', args, origin: { kind: 'composer' }, presentation: { layout: 'main', columns: 80 } } as never)
+  expect(((await run('mute')) as { text: string }).text).toContain('TTS muted')
+  expect(((await run('status')) as { text: string }).text).toContain('TTS muted')
+  expect(((await run('')) as { text: string }).text).toContain('TTS on')
+})
+
+test('/tts volume persists and reports', async ($, on) => {
+  mock.store(on)
+  const run = (args: string) =>
+    $.command.run({ command: 'tts', args, origin: { kind: 'composer' }, presentation: { layout: 'main', columns: 80 } } as never)
+  expect(((await run('volume')) as { text: string }).text).toBe('TTS volume 10/10')
+  expect(((await run('volume 4')) as { text: string }).text).toBe('TTS volume 4/10')
+  expect(((await run('volume')) as { text: string }).text).toBe('TTS volume 4/10')
+  expect(((await run('volume 99')) as { text: string }).text).toContain('Usage')
+})
+
+test('/tts speed persists and reports', async ($, on) => {
+  mock.store(on)
+  const run = (args: string) =>
+    $.command.run({ command: 'tts', args, origin: { kind: 'composer' }, presentation: { layout: 'main', columns: 80 } } as never)
+  expect(((await run('speed')) as { text: string }).text).toContain('TTS speed 1')
+  expect(((await run('speed 0.8')) as { text: string }).text).toBe('TTS speed 0.8')
+  expect(((await run('speed')) as { text: string }).text).toContain('TTS speed 0.8')
+  expect(((await run('speed 3')) as { text: string }).text).toContain('Usage')
+})
+
+test('a new session starts muted until it is unmuted or the default changes', async ($, on) => {
+  mock.store(on)
+  const run = (args: string) =>
+    $.command.run({ command: 'tts', args, origin: { kind: 'composer' }, presentation: { layout: 'main', columns: 80 } } as never)
+  expect(((await run('status')) as { text: string }).text).toContain('TTS muted')
+  expect(((await run('default')) as { text: string }).text).toContain('muted')
+  expect(((await run('default on')) as { text: string }).text).toContain('speaking')
+  expect(((await run('status')) as { text: string }).text).toContain('TTS on')
+  expect(((await run('mute')) as { text: string }).text).toContain('TTS muted')
+})
