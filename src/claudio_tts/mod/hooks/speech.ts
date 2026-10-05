@@ -22,6 +22,7 @@ export type TtsCommand =
   | { kind: 'device'; value?: string }
   | { kind: 'mic'; value?: string }
   | { kind: 'speed'; value?: number }
+  | { kind: 'voice'; value?: string }
   | { kind: 'default'; value?: 'on' | 'off' }
 
 export const DEFAULT_VOLUME = 10
@@ -58,6 +59,9 @@ export const parseTtsArgs = (args: string): TtsCommand | undefined => {
   if (word === 'default' || word === 'startup') {
     if (rest === '') return { kind: 'default' }
     if (rest === 'on' || rest === 'off') return { kind: 'default', value: rest }
+  }
+  if (word === 'voice' || word === 'voices') {
+    return rest === '' || word === 'voices' ? { kind: 'voice' } : { kind: 'voice', value: rest }
   }
   return undefined
 }

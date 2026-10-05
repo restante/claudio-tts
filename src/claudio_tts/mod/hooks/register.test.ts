@@ -39,6 +39,10 @@ test('parseTtsArgs', () => {
   expect(parseTtsArgs('default on')).toEqual({ kind: 'default', value: 'on' })
   expect(parseTtsArgs('default off')).toEqual({ kind: 'default', value: 'off' })
   expect(parseTtsArgs('default maybe')).toBeUndefined()
+  expect(parseTtsArgs('voice')).toEqual({ kind: 'voice' })
+  expect(parseTtsArgs('voices')).toEqual({ kind: 'voice' })
+  expect(parseTtsArgs('voice af_bella')).toEqual({ kind: 'voice', value: 'af_bella' })
+  expect(parseTtsArgs('voice DEFAULT')).toEqual({ kind: 'voice', value: 'default' })
   expect(parseTtsArgs('nope')).toBeUndefined()
 })
 
@@ -100,4 +104,35 @@ test('a finished answer is handed to the speak command on stdin', async ($, on) 
   const spoke = calls.find(c => c.argv.includes('speak'))
   expect(spoke?.argv.slice(0, 3)).toEqual(['/py', '-m', 'claudio_tts'])
   expect(spoke?.stdin).toBe('Hello **world**')
+})
+
+test('/tts voice validates through the CLI, stores the choice and passes it to speak', async ($, on) => {
+  mock.store(on)
+  mock.env(on, { CLAUDIO_TTS_PYTHON: '/py' })
+  const calls: { argv: readonly string[]; stdin?: string }[] = []
+  on('process.run', async (_$, e) => {
+    calls.push({ argv: e.argv, stdin: e.init?.stdin })
+    const isBad = e.argv.includes('--check') && e.argv.includes('af_nope')
+    return {
+      value: {
+        exitCode: isBad ? 1 : 0,
+        stdout: isBad ? "unknown voice 'af_nope'" : '',
+        stderr: '',
+        isStdoutTruncated: false,
+        isStderrTruncated: false,
+      },
+    }
+  })
+  on('turn.complete', (_$, e) => ({ text: e.answer }))
+  const run = (args: string) =>
+    $.command.run({ command: 'tts', args, origin: { kind: 'composer' }, presentation: { layout: 'main', columns: 80 } } as never)
+  await run('unmute')
+  expect(((await run('voice af_nope')) as { text: string }).text).toContain('unknown voice')
+  expect(((await run('voice af_bella')) as { text: string }).text).toBe('Voice: af_bella')
+  calls.length = 0
+  await $.turn.complete({ answer: 'Hi there', durationMs: 1, isAborted: false, turnId: 't2', reason: 'answer' } as never)
+  const spoke = calls.find(c => c.argv.includes('speak'))
+  expect(spoke?.argv).toContain('--voice')
+  expect(spoke?.argv[spoke.argv.indexOf('--voice') + 1]).toBe('af_bella')
+  expect(((await run('voice default')) as { text: string }).text).toContain('reset')
 })

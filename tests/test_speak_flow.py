@@ -42,8 +42,9 @@ def test_speak_cleans_markdown_and_returns_immediately(isolated_home):
     assert done.returncode == 0, done.stderr
     assert time.time() - started < 5
     assert _wait(lambda: log.exists() and log.read_text().strip())
-    pid, volume, speed, devices_spec, text = log.read_text().strip().split("\t")
+    _pid, volume, speed, _devices, voice, text = log.read_text().strip().split("\t")
     assert (volume, speed, text) == ("4", "0.8", "Hello world")
+    assert voice  # a voice is always chosen (default af_sky unless KOKORO_VOICE is set)
 
 
 def test_a_new_reply_replaces_the_same_sessions_older_one(isolated_home):
@@ -87,3 +88,11 @@ def test_sessions_take_turns(isolated_home):
 @pytest.mark.skipif(sys.platform == "win32", reason="posix pid semantics")
 def test_stop_when_nothing_is_running_is_quiet(isolated_home):
     assert _run("stop", "--session", "nobody", env=_env(isolated_home)).returncode == 0
+
+
+def test_a_language_override_is_accepted_by_say(isolated_home):
+    """`--lang` lets a voice read a language it has no native voice for (German, Polish)."""
+    done = _run("say", "Hallo Welt", "--lang", "de", "--voice", "af_heart", env=_env(isolated_home))
+    assert done.returncode == 0, done.stderr
+    log = (isolated_home / "played.log").read_text().strip().split("\t")
+    assert log[4] == "af_heart" and log[5] == "Hallo Welt"

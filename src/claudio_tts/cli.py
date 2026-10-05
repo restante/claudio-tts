@@ -21,6 +21,7 @@ from claudio_tts import (
     paths,
     player,
     procs,
+    voices,
 )
 from claudio_tts.locks import SpeakLock
 
@@ -57,6 +58,7 @@ def cmd_speak(a: argparse.Namespace) -> int:
         [
             "--session", a.session, "--text-file", str(path), "--volume", str(a.volume),
             "--speed", str(a.speed), "--devices", a.devices, "--voice", a.voice,
+            *(["--lang", a.lang] if a.lang else []),
         ]
     )  # fmt: skip
     procs.register(a.session, worker.pid)
@@ -72,7 +74,14 @@ def cmd_worker(a: argparse.Namespace) -> int:
     duck.duck()
     try:
         with SpeakLock(paths.state_dir() / "speak.lock"):  # one speaker at a time, all sessions
-            player.speak(text, voice=a.voice, volume=a.volume, speed=a.speed, device_spec=a.devices)
+            player.speak(
+                text,
+                voice=a.voice,
+                volume=a.volume,
+                speed=a.speed,
+                device_spec=a.devices,
+                lang=a.lang,
+            )
     finally:
         procs.clear(a.session)
         if not procs.others_speaking(a.session):
@@ -89,7 +98,12 @@ def cmd_stop(a: argparse.Namespace) -> int:
 
 def cmd_say(a: argparse.Namespace) -> int:
     player.speak(
-        markdown.clean(a.text), voice=a.voice, volume=a.volume, speed=a.speed, device_spec=a.devices
+        markdown.clean(a.text),
+        voice=a.voice,
+        volume=a.volume,
+        speed=a.speed,
+        device_spec=a.devices,
+        lang=a.lang,
     )
     return 0
 
@@ -99,6 +113,29 @@ def cmd_devices(a: argparse.Namespace) -> int:
     default = devices.default_index(kind)
     for index, name in devices.inputs() if a.inputs else devices.outputs():
         print(f"{name}{' (default)' if index == default else ''}")
+    return 0
+
+
+def cmd_voices(a: argparse.Namespace) -> int:
+    names = voices.available()
+    if not names:
+        print("error: no voices found; run `claudio-tts download-model`", file=sys.stderr)
+        return 1
+    if a.check:
+        if a.check in names:
+            return 0
+        hint = voices.suggest(a.check, names)
+        print(
+            f"unknown voice '{a.check}'" + (f"; did you mean: {', '.join(hint)}?" if hint else "")
+        )
+        return 1
+    for code, group in voices.grouped(names).items():
+        print(f"{voices.label(code)} ({code})")
+        for gender, title in (("f", "female"), ("m", "male")):
+            row = [n for n in group if n[1] == gender]
+            if row:
+                print(f"  {title}: {' '.join(row)}")
+    print(f"\n{len(names)} voices. Use one with /tts voice <name>, e.g. /tts voice af_heart")
     return 0
 
 
@@ -136,7 +173,30 @@ def cmd_uninstall_mod(a: argparse.Namespace) -> int:
     return 0
 
 
+def _report() -> int:
+    """A paste-ready diagnostic for bug reports. Contains no text you have spoken and no secrets."""
+    import platform
+
+    found = model.find()
+    try:
+        outs = [name for _, name in devices.outputs()]
+    except Exception as error:
+        outs = [f"(audio backend failed: {error})"]
+    mod = paths.claude_dir() / "mods" / install_mod.MOD_NAME
+    print("```text")
+    print(f"claudio-tts {__version__}")
+    print(f"os: {platform.platform()} ({platform.machine()})")
+    print(f"python: {sys.version.split()[0]}")
+    print(f"model: {found[0].name if found else 'MISSING'}")
+    print(f"mod installed: {mod.exists()}  claude on PATH: {shutil.which('claude') is not None}")
+    print("outputs: " + "; ".join(outs))
+    print("```")
+    return 0
+
+
 def cmd_doctor(a: argparse.Namespace) -> int:
+    if a.report:
+        return _report()
     failed = False
 
     def check(ok: bool, label: str, hint: str = "", critical: bool = True) -> None:
@@ -181,6 +241,11 @@ def _add_voice_args(p: argparse.ArgumentParser) -> None:
     p.add_argument("--speed", type=float, default=1.0)
     p.add_argument("--devices", default="default", help='"airpods,speakers", "all" or "default"')
     p.add_argument("--voice", default=os.environ.get("KOKORO_VOICE", DEFAULT_VOICE))
+    p.add_argument(
+        "--lang",
+        help="espeak language to pronounce with (default: the voice's own). Lets a voice read a"
+        " language it has no native voice for, e.g. --lang de, with an accent",
+    )
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -215,6 +280,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--inputs", action="store_true")
     p.set_defaults(func=cmd_devices)
 
+    p = sub.add_parser("voices", help="list the available voices")
+    p.add_argument("--check", metavar="NAME", help="exit 0 if NAME is a real voice")
+    p.set_defaults(func=cmd_voices)
+
     p = sub.add_parser("download-model", help="download and verify the Kokoro model")
     p.add_argument(
         "--lite", action="store_true", help="smaller int8 model (92 MB instead of 326 MB)"
@@ -234,6 +303,9 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = sub.add_parser("doctor", help="check the installation")
     p.add_argument("--speak", action="store_true", help="also speak a test phrase")
+    p.add_argument(
+        "--report", action="store_true", help="print a copy-paste block for a bug report"
+    )
     p.set_defaults(func=cmd_doctor)
     return parser
 

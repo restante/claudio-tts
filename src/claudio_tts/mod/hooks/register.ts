@@ -12,7 +12,7 @@ import {
 
 const MIN_NARRATION = 10
 const USAGE =
-  'Usage: /tts [mute|unmute|status|default on|off|volume 1-10|speed 0.5-1.5|device <names|all|default>|mic <name|default>]'
+  'Usage: /tts [mute|unmute|status|default on|off|volume 1-10|speed 0.5-1.5|voice <name>|device <names|all|default>|mic <name|default>]'
 
 type Dollar = Parameters<Hook<'turn.start'>>[0]
 
@@ -53,6 +53,7 @@ async function speak($: Dollar, text: string) {
   const volume = Number((await $.store.get('volume')) ?? DEFAULT_VOLUME)
   const speed = Number((await $.store.get('speed')) ?? DEFAULT_SPEED)
   const devices = String((await $.store.get('devices')) ?? 'default')
+  const voice = String((await $.store.get('voice')) ?? '')
   await cli(
     $,
     [
@@ -61,6 +62,7 @@ async function speak($: Dollar, text: string) {
       '--volume', String(volume),
       '--speed', String(speed),
       '--devices', devices,
+      ...(voice ? ['--voice', voice] : []),
     ],
     text,
   )
@@ -128,6 +130,27 @@ export const register: Register = on => {
       return { text: `New sessions will start ${cmd.value === 'off' ? 'muted' : 'speaking'}` }
     }
 
+    if (cmd.kind === 'voice') {
+      const current = String((await $.store.get('voice')) ?? '')
+      if (cmd.value === undefined) {
+        const listed = await cli($, ['voices'])
+        return {
+          text: `Voice: ${current || 'default (KOKORO_VOICE or af_sky)'}\n${listed?.stdout.trim() ?? '(could not list voices)'}`,
+        }
+      }
+      if (cmd.value === 'default') {
+        await $.store.delete('voice')
+        return { text: 'Voice reset to the default' }
+      }
+      const check = await cli($, ['voices', '--check', cmd.value])
+      if (check && check.exitCode !== 0) {
+        return { text: check.stdout.trim() || `Unknown voice '${cmd.value}'. Try /tts voice to list them` }
+      }
+      await $.store.set('voice', cmd.value)
+      await speak($, `Hi, this is ${cmd.value.slice(3)}.`)
+      return { text: `Voice: ${cmd.value}` }
+    }
+
     if (cmd.kind === 'speed') {
       const speed = Number((await $.store.get('speed')) ?? DEFAULT_SPEED)
       if (cmd.value === undefined) {
@@ -155,8 +178,9 @@ export const register: Register = on => {
     }
     const where = String((await $.store.get('devices')) ?? 'default')
     const pace = Number((await $.store.get('speed')) ?? DEFAULT_SPEED)
+    const chosen = String((await $.store.get('voice')) ?? '') || 'default'
     return {
-      text: `${next ? 'TTS muted' : 'TTS on'} (this session), volume ${volume}/10, speed ${pace}, output ${where}`,
+      text: `${next ? 'TTS muted' : 'TTS on'} (this session), volume ${volume}/10, speed ${pace}, voice ${chosen}, output ${where}`,
     }
   })
 

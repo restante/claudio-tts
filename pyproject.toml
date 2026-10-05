@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "claudio-tts"
-version = "0.1.1"
+version = "0.2.0"
 description = "Spoken replies for Claude Code, powered by Kokoro. Per-session mute, volume, speed and output devices."
 readme = "README.md"
 requires-python = ">=3.10"

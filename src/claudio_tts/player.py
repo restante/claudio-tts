@@ -9,7 +9,7 @@ import sys
 import threading
 import time
 
-from claudio_tts import devices, model
+from claudio_tts import devices, model, voices
 
 MIN_SPEED, MAX_SPEED = 0.5, 1.5
 
@@ -54,7 +54,7 @@ class _Sink:
 
 
 async def _stream(
-    text: str, voice: str, gain: float, outputs: list[int | None], speed: float
+    text: str, voice: str, gain: float, outputs: list[int | None], speed: float, lang: str
 ) -> None:
     from kokoro_onnx import Kokoro
 
@@ -63,7 +63,7 @@ async def _stream(
         raise RuntimeError("Kokoro model not installed; run `claudio-tts download-model`")
     kokoro = Kokoro(str(found[0]), str(found[1]))
     sinks: list[_Sink] | None = None
-    async for samples, rate in kokoro.create_stream(text, voice=voice, speed=speed, lang="en-us"):
+    async for samples, rate in kokoro.create_stream(text, voice=voice, speed=speed, lang=lang):
         if sinks is None:
             sinks = [_Sink(d, rate) for d in outputs]
         block = (samples * gain).astype("float32").reshape(-1, 1)
@@ -73,7 +73,15 @@ async def _stream(
         sink.close()
 
 
-def speak(text: str, *, voice: str, volume: int, speed: float, device_spec: str | None) -> None:
+def speak(
+    text: str,
+    *,
+    voice: str,
+    volume: int,
+    speed: float,
+    device_spec: str | None,
+    lang: str | None = None,
+) -> None:
     """Speak `text`. Blocks until it has been played.
 
     `CLAUDIO_TTS_FAKE_PLAYER=<file>` swaps the audio for a log line in that file, so tests and CI
@@ -82,10 +90,10 @@ def speak(text: str, *, voice: str, volume: int, speed: float, device_spec: str 
     fake = os.environ.get("CLAUDIO_TTS_FAKE_PLAYER")
     if fake:
         with open(fake, "a", encoding="utf-8") as log:
-            log.write(f"{os.getpid()}\t{volume}\t{speed}\t{device_spec}\t{text}\n")
+            log.write(f"{os.getpid()}\t{volume}\t{speed}\t{device_spec}\t{voice}\t{text}\n")
         time.sleep(float(os.environ.get("CLAUDIO_TTS_FAKE_SECONDS", "0")))
         return
     gain = max(1, min(10, volume)) / 10
     speed = max(MIN_SPEED, min(MAX_SPEED, speed))
     outputs = devices.pick(device_spec, devices.outputs())
-    asyncio.run(_stream(text, voice, gain, outputs, speed))
+    asyncio.run(_stream(text, voice, gain, outputs, speed, lang or voices.language(voice)))

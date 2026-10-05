@@ -1,0 +1,49 @@
+name: Bug report
+description: Something doesn't work as expected
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time! Silence is the most common "bug": new sessions start **muted**, so try `/tts unmute` first.
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options: [macOS, Windows 10/11, Linux, Other]
+    validations:
+      required: true
+  - type: input
+    id: claude
+    attributes:
+      label: Claude Code version
+      description: Output of `claude --version`
+  - type: textarea
+    id: doctor
+    attributes:
+      label: Diagnostic report
+      description: Run `claudio-tts doctor --report` (or `python -m claudio_tts doctor --report` from the install's Python) and paste the output. It never includes anything you have spoken.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened instead?
+      description: Include any error text. Worker errors are in `worker.log` in the install's `state` folder.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. /tts unmute
+        2. /tts device ...
+        3. ...
