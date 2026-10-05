@@ -452,7 +452,7 @@ Jeśli masz zainstalowany Claude Code, sprawdź moda poleceniami `claude plugin 
   [kokoro-onnx](https://github.com/thewh1teagle/kokoro-onnx) autorstwa thewh1teagle (MIT).
 - Pomysł na udźwiękowienie Claude Code pochodzi z [ktaletsk/claude-code-tts](https://github.com/ktaletsk/claude-code-tts).
   claudio-tts to świeża implementacja na systemie modów Claude Code i nie dzieli z nim żadnego kodu.
-- Zbudowane z pomocą Claude'a (AI), a następnie sprawdzone i przetestowane przez opiekuna projektu.
+- Mój przyjaciel [Donato Antonini](https://www.linkedin.com/in/donato-antonini-47b18a48/), za burzę mózgów i pomysł.
 
 ## 📄 Licencja
 

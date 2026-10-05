@@ -443,7 +443,7 @@ Claude Code इंस्टॉल होने पर, mod को `claude plugin
   [kokoro-onnx](https://github.com/thewh1teagle/kokoro-onnx) (thewh1teagle, MIT) के ज़रिए चलाया जाता है।
 - Claude Code को आवाज़ देने का विचार [ktaletsk/claude-code-tts](https://github.com/ktaletsk/claude-code-tts) से आया है।
   claudio-tts, Claude Code के mod system पर एक बिल्कुल नया implementation है और उसके साथ कोई code साझा नहीं करता।
-- Claude (AI) की मदद से बनाया गया, फिर maintainer द्वारा review और test किया गया।
+- मेरे मित्र [Donato Antonini](https://www.linkedin.com/in/donato-antonini-47b18a48/), विचार-मंथन (brainstorming) और इस आइडिया के लिए।
 
 ## 📄 License
 
