@@ -1,6 +1,7 @@
 """Record a REAL Claude Code session (through tmux) and stitch it after the install scene.
 
-It starts `claude` in a scratch folder, types real commands and one real prompt, and snapshots the screen.
+It starts `claude` in a scratch folder, types real commands and one real prompt, and
+snapshots the screen.
 That uses your own Claude login and spends one short prompt. Nothing is faked. Needs tmux.
 
     python scripts/record_claude_demo.py PART1.cast OUT.cast
