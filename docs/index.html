@@ -26,6 +26,7 @@ h2{margin:34px 0 4px;font-size:1.25rem}h2 small{color:var(--dim);font-weight:400
 .meta{min-width:0;flex:1}.name{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:600}.sub{color:var(--dim);font-size:.8rem}
 .copy{border:1px solid var(--line);background:transparent;color:var(--dim);border-radius:6px;font:12px ui-monospace,Menlo,monospace;padding:3px 7px;cursor:pointer}
 .copy:hover{color:var(--text);border-color:var(--accent)}
+.voice.loading .play{opacity:.7}
 .bar{position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--accent)}
 .note{border-left:3px solid var(--violet);padding:6px 14px;color:var(--dim);margin:22px 0}
 code{font-family:ui-monospace,Menlo,Consolas,monospace;background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 6px}
@@ -60,18 +61,24 @@ languages with <code>/tts lang &lt;code&gt;</code> (with an accent where it has 
 <footer>MIT licensed · Kokoro-82M by hexgrad (Apache-2.0) via kokoro-onnx ·
 <a href="https://github.com/restante/claudio-tts">github.com/restante/claudio-tts</a></footer>
 </main><script>
-const audio = new Audio(); let current = null;
-function reset(){ if(current){ current.row.classList.remove('playing'); current.btn.textContent='▶'; current.btn.setAttribute('aria-label','Play '+current.name); current.bar.style.width='0'; } current=null; }
+const audio = new Audio(); audio.preload = 'auto'; let current = null;
+const label = {play: ['▶', 'Play '], pause: ['❚❚', 'Pause '], wait: ['…', 'Loading ']};
+function setBtn(row, state){ const b = row.querySelector('.play'); b.textContent = label[state][0]; b.setAttribute('aria-label', label[state][1] + row.dataset.voice); }
+function stopUI(){ if(!current) return; current.classList.remove('playing', 'loading'); setBtn(current, 'play'); current.querySelector('.bar').style.width = '0'; current = null; }
 function toggle(row){
-  const btn=row.querySelector('.play'), bar=row.querySelector('.bar'), name=row.dataset.voice;
-  if(current && current.row===row){ if(audio.paused){ audio.play(); btn.textContent='❚❚'; } else { audio.pause(); btn.textContent='▶'; } return; }
-  reset(); audio.src='samples/'+name+'.mp3'; current={row,btn,bar,name};
-  audio.play().then(()=>{ row.classList.add('playing'); btn.textContent='❚❚'; btn.setAttribute('aria-label','Pause '+name); }).catch(()=>{ reset(); });
+  if(current === row){ if(audio.paused){ audio.play().catch(() => {}); } else { audio.pause(); } return; }
+  stopUI(); current = row; row.classList.add('playing', 'loading'); setBtn(row, 'wait');
+  audio.src = 'samples/' + row.dataset.voice + '.mp3';
+  audio.play().catch(e => { if(e.name !== 'AbortError' && current === row) stopUI(); });
 }
-audio.addEventListener('timeupdate',()=>{ if(current && audio.duration) current.bar.style.width=(100*audio.currentTime/audio.duration)+'%'; });
-audio.addEventListener('ended',reset);
-document.querySelectorAll('.voice').forEach(row=>{
-  row.querySelector('.play').addEventListener('click',()=>toggle(row));
-  row.querySelector('.copy').addEventListener('click',e=>{ const t='/tts voice '+row.dataset.voice; navigator.clipboard.writeText(t).then(()=>{ e.target.textContent='copied'; setTimeout(()=>e.target.textContent='copy command',1200); }); });
+audio.addEventListener('playing', () => { if(current){ current.classList.remove('loading'); setBtn(current, 'pause'); } });
+audio.addEventListener('pause', () => { if(current && !audio.ended && audio.readyState > 2) setBtn(current, 'play'); });
+audio.addEventListener('waiting', () => { if(current) setBtn(current, 'wait'); });
+audio.addEventListener('timeupdate', () => { if(current && audio.duration) current.querySelector('.bar').style.width = (100 * audio.currentTime / audio.duration) + '%'; });
+audio.addEventListener('ended', stopUI);
+audio.addEventListener('error', () => { if(current){ current.querySelector('.sub').textContent = 'could not load this sample'; stopUI(); } });
+document.querySelectorAll('.voice').forEach(row => {
+  row.querySelector('.play').addEventListener('click', () => toggle(row));
+  row.querySelector('.copy').addEventListener('click', e => { const t = '/tts voice ' + row.dataset.voice; navigator.clipboard.writeText(t).then(() => { e.target.textContent = 'copied'; setTimeout(() => e.target.textContent = 'copy command', 1200); }); });
 });
 </script></body></html>
