@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.5.0
+
+- New: **add-on outputs.** Packages can register extra audio outputs under the `claudio_tts.sinks` entry-point
+  group (see `claudio_tts/sinks.py`). They show in `claudio-tts devices` and can be chosen with `/tts device <name>`.
+  The first user is [claudio-vibecode](https://github.com/restante/claudio-vibecode), which plays Claude's speech on
+  your phone.
+- New: a small per-session state file (`claudio-tts session-state`) that add-ons can read to show whether a session
+  is muted.
+- `install_mod.install()` takes `name` and `python_var`, so add-ons can reuse its safe `settings.json` merge.
+
 ## 0.4.0
 
 - New: **updates on your say-so.** `/tts update` (or `claudio-tts update --yes`) installs the newest GitHub

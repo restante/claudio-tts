@@ -61,11 +61,17 @@ def install(
     claude_dir: Path | None = None,
     link: bool = False,
     source: Path | None = None,
+    name: str = MOD_NAME,
+    python_var: str = PYTHON_VAR,
 ) -> dict:
-    """Copy (or link) the mod into `<claude>/mods/claudio-tts` and register it. Idempotent."""
+    """Copy (or link) a mod into `<claude>/mods/<name>` and register it. Idempotent.
+
+    Defaults install this package's own mod; add-ons such as claudio-vibecode pass their own
+    `name`, `source` and `python_var`.
+    """
     claude = claude_dir or default_claude_dir()
     source = source or mod_source()
-    dest = claude / "mods" / MOD_NAME
+    dest = claude / "mods" / name
     settings = claude / "settings.json"
     before = settings.read_text(encoding="utf-8") if settings.exists() else None
     data = _load(settings)  # fail before touching anything if settings are unusable
@@ -81,17 +87,21 @@ def install(
         shutil.copytree(source, dest, ignore=shutil.ignore_patterns("node_modules", "__pycache__"))
 
     env = data.setdefault("env", {})
-    legacy = {_norm(str(claude / "mods" / name)) for name in LEGACY_NAMES}
+    legacy = (
+        {_norm(str(claude / "mods" / old)) for old in LEGACY_NAMES} if name == MOD_NAME else set()
+    )
     kept = [p for p in _dirs(env) if _norm(p) not in legacy and _norm(p) != _norm(str(dest))]
     env[PLUGIN_DIRS] = os.pathsep.join([*kept, str(dest)])
-    env[PYTHON_VAR] = python
+    env[python_var] = python
     changed = _save(settings, data, before)
     return {"mod": str(dest), "settings": str(settings), "changed": changed, "linked": link}
 
 
-def uninstall(claude_dir: Path | None = None) -> dict:
+def uninstall(
+    claude_dir: Path | None = None, name: str = MOD_NAME, python_var: str = PYTHON_VAR
+) -> dict:
     claude = claude_dir or default_claude_dir()
-    dest = claude / "mods" / MOD_NAME
+    dest = claude / "mods" / name
     settings = claude / "settings.json"
     before = settings.read_text(encoding="utf-8") if settings.exists() else None
     data = _load(settings)
@@ -102,7 +112,7 @@ def uninstall(claude_dir: Path | None = None) -> dict:
             env[PLUGIN_DIRS] = os.pathsep.join(kept)
         else:
             env.pop(PLUGIN_DIRS, None)
-        env.pop(PYTHON_VAR, None)
+        env.pop(python_var, None)
         if not env:
             data.pop("env", None)
     changed = _save(settings, data, before) if before is not None else False

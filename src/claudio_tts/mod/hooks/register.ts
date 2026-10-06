@@ -88,7 +88,10 @@ async function noticeUpdate($: Dollar) {
 }
 
 async function showStatus($: Dollar) {
-  $.ui.status((await isMuted($)) ? 'TTS muted' : 'TTS on')
+  const muted = await isMuted($)
+  $.ui.status(muted ? 'TTS muted' : 'TTS on')
+  // A small file other add-ons (claudio-vibecode) can read to show this session's sound state.
+  await cli($, ['session-state', '--session', await sessionId($), '--muted', muted ? 'on' : 'off'])
 }
 
 export const register: Register = on => {
@@ -264,6 +267,7 @@ export const register: Register = on => {
 
   on('session.end', async ($, e, next) => {
     await stop($)
+    await cli($, ['session-state', '--session', await sessionId($), '--clear'])
     return next(e)
   })
 }

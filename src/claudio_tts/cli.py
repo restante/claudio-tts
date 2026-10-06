@@ -22,6 +22,8 @@ from claudio_tts import (
     paths,
     player,
     procs,
+    sessionstate,
+    sinks,
     update,
     voices,
 )
@@ -83,6 +85,7 @@ def cmd_worker(a: argparse.Namespace) -> int:
                 speed=a.speed,
                 device_spec=a.devices,
                 lang=a.lang,
+                session=a.session,
             )
     finally:
         procs.clear(a.session)
@@ -115,6 +118,9 @@ def cmd_devices(a: argparse.Namespace) -> int:
     default = devices.default_index(kind)
     for index, name in devices.inputs() if a.inputs else devices.outputs():
         print(f"{name}{' (default)' if index == default else ''}")
+    if not a.inputs:
+        for line in sinks.describe():  # outputs added by add-ons, e.g. claudio-vibecode's phone
+            print(line)
     return 0
 
 
@@ -257,6 +263,14 @@ def cmd_doctor(a: argparse.Namespace) -> int:
     return 1 if failed else 0
 
 
+def cmd_session_state(a: argparse.Namespace) -> int:
+    if a.clear:
+        sessionstate.clear(a.session)
+    elif a.muted:
+        sessionstate.write(a.session, muted=a.muted == "on")
+    return 0
+
+
 def cmd_update(a: argparse.Namespace) -> int:
     return update.run(check=a.check, yes=a.yes, quiet=a.quiet)
 
@@ -329,6 +343,12 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("uninstall-mod", help="remove the Claude mod and its settings entries")
     p.add_argument("--claude-dir")
     p.set_defaults(func=cmd_uninstall_mod)
+
+    p = sub.add_parser("session-state", help="record a session's mute state (the mod calls this)")
+    p.add_argument("--session", required=True)
+    p.add_argument("--muted", choices=["on", "off"])
+    p.add_argument("--clear", action="store_true")
+    p.set_defaults(func=cmd_session_state)
 
     p = sub.add_parser("update", help="look for a newer release; install it with --yes")
     p.add_argument("--check", action="store_true", help="only look (exit 10 if newer exists)")

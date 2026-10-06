@@ -9,7 +9,7 @@ import sys
 import threading
 import time
 
-from claudio_tts import devices, model, voices
+from claudio_tts import devices, model, sinks, voices
 
 MIN_SPEED, MAX_SPEED = 0.5, 1.5
 
@@ -54,7 +54,13 @@ class _Sink:
 
 
 async def _stream(
-    text: str, voice: str, gain: float, outputs: list[int | None], speed: float, lang: str
+    text: str,
+    voice: str,
+    gain: float,
+    outputs: list[int | None],
+    speed: float,
+    lang: str,
+    extra: list | None = None,
 ) -> None:
     from kokoro_onnx import Kokoro
 
@@ -62,17 +68,21 @@ async def _stream(
     if found is None:
         raise RuntimeError("Kokoro model not installed; run `claudio-tts download-model`")
     kokoro = Kokoro(str(found[0]), str(found[1]))
-    sinks: list[_Sink] | None = None
+    local: list[_Sink] | None = None
     async for samples, rate in kokoro.create_stream(
         text, voice=voices.resolve(voice), speed=speed, lang=lang
     ):
-        if sinks is None:
-            sinks = [_Sink(d, rate) for d in outputs]
+        if local is None:
+            local = [_Sink(d, rate) for d in outputs]
         block = (samples * gain).astype("float32").reshape(-1, 1)
-        for sink in sinks:
+        for sink in local:
             sink.put(block)
-    for sink in sinks or []:
+        for add_on in extra or []:  # add-on outputs get the sentence at full level
+            add_on.put(samples, rate)
+    for sink in local or []:
         sink.close()
+    for add_on in extra or []:
+        add_on.close()
 
 
 def speak(
@@ -83,6 +93,7 @@ def speak(
     speed: float,
     device_spec: str | None,
     lang: str | None = None,
+    session: str = "",
 ) -> None:
     """Speak `text`. Blocks until it has been played.
 
@@ -97,5 +108,16 @@ def speak(
         return
     gain = max(1, min(10, volume)) / 10
     speed = max(MIN_SPEED, min(MAX_SPEED, speed))
-    outputs = devices.pick(device_spec, devices.outputs())
-    asyncio.run(_stream(text, voice, gain, outputs, speed, lang or voices.language(voice)))
+    tokens = [t.strip() for t in devices.normalise(device_spec).split(",")]
+    extra = sinks.open_all(session or "default")  # add-on outputs that have a listener right now
+    names = set(sinks.factories())
+    local = ",".join(t for t in tokens if t not in names)
+    only_add_ons = any(t in names for t in tokens) and not local
+    if extra and (only_add_ons or any(not s.local for s in extra)):
+        outputs: list[int | None] = []  # the add-on is the only output (asked for, or it says so)
+    elif only_add_ons:
+        outputs = [None]  # asked for an add-on that has no listener: don't go silent
+    else:
+        outputs = devices.pick(local, devices.outputs())
+    lang = lang or voices.language(voice)
+    asyncio.run(_stream(text, voice, gain, outputs, speed, lang, extra))
