@@ -46,6 +46,10 @@ test('parseTtsArgs', () => {
   expect(parseTtsArgs('lang')).toEqual({ kind: 'lang' })
   expect(parseTtsArgs('lang DE')).toEqual({ kind: 'lang', value: 'de' })
   expect(parseTtsArgs('language auto')).toEqual({ kind: 'lang', value: 'auto' })
+  expect(parseTtsArgs('update')).toEqual({ kind: 'update' })
+  expect(parseTtsArgs('update check')).toEqual({ kind: 'update', value: 'check' })
+  expect(parseTtsArgs('update off')).toEqual({ kind: 'update', value: 'off' })
+  expect(parseTtsArgs('update maybe')).toBeUndefined()
   expect(parseTtsArgs('nope')).toBeUndefined()
 })
 

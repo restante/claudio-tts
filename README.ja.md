@@ -144,6 +144,7 @@ PowerShell の `irm | iex` ではスイッチを渡せません。先に `CLAUDI
 | `/tts voice` | すべての音声を一覧表示し、現在の音声を表示 |
 | `/tts voice af_heart` | 音声を変更(新しい声で挨拶します)。`/tts voice default` で元に戻す |
 | `/tts lang de` · `/tts lang auto` | 音声にほかの言語を読ませる(140 言語のどれでも)、または音声本来の言語に戻す |
+| `/tts update` | 新しいリリースを確認してインストールします(入力するまで何もインストールされません)。`/tts update check` は確認のみ、`/tts update off` は毎日の確認を止めます |
 | `/tts volume 1-10` | 音量。すべてのセッションで共通です。`/tts volume` で現在値を表示 |
 | `/tts speed 0.5-1.5` | 話す速さ(1 が標準)。`/tts pace` は別名です |
 | `/tts device` | 出力デバイスを一覧表示し、現在の選択を表示 |
@@ -408,6 +409,10 @@ GitHub のプロフィール [@restante](https://github.com/restante) から連�
 - [ ] `pipx` / Homebrew / winget でのインストール
 - [ ] コード、パス、数字のよりスマートな読み上げ
 - [ ] 音声プレビューの選択画面
+
+## 🔄 アップデート
+
+claudio-tts はセッション開始時に 1 日 1 回までだけ新しいリリースを確認し、`update available` と表示します。自動ではインストールしません。`/tts update` と入力するとインストールされるので、開いているセッションを再起動してください。`/tts update off` で確認をオフにできます。
 
 ## 🗑️ アンインストール
 

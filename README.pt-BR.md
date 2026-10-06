@@ -146,6 +146,7 @@ Tudo é um único slash command dentro do Claude Code:
 | `/tts voice` | Lista todas as vozes e mostra a atual |
 | `/tts voice af_heart` | Troca a voz (ela diz olá na nova voz). `/tts voice default` restaura o padrão |
 | `/tts lang de` · `/tts lang auto` | Faz a voz ler outro idioma (qualquer um dos 140), ou volta ao idioma dela |
+| `/tts update` | Procura uma versão nova e a instala (nada é instalado até você digitar). `/tts update check` só olha, `/tts update off` para a verificação diária |
 | `/tts volume 1-10` | Volume, compartilhado por todas as sessões. `/tts volume` mostra o atual |
 | `/tts speed 0.5-1.5` | Ritmo da fala (1 é o normal). `/tts pace` é um apelido |
 | `/tts device` | Lista os dispositivos de saída e mostra a escolha atual |
@@ -417,6 +418,10 @@ e ofertas de ajuda são todas bem-vindas. E se o claudio-tts alegrou o seu dia, 
 - [ ] Instalação via `pipx` / Homebrew / winget
 - [ ] Leitura mais inteligente de código, caminhos e números
 - [ ] Um seletor com prévia de vozes
+
+## 🔄 Atualizar
+
+claudio-tts procura uma versão nova no máximo uma vez por dia ao iniciar uma sessão e mostra `update available`. Ele nunca instala sozinho. Digite `/tts update` para instalar e depois reinicie as sessões abertas. `/tts update off` desativa a verificação.
 
 ## 🗑️ Desinstalar
 

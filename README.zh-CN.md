@@ -139,6 +139,7 @@ irm https://raw.githubusercontent.com/restante/claudio-tts/main/install.ps1 | ie
 | `/tts voice` | 列出所有声音,并显示当前使用的 |
 | `/tts voice af_heart` | 更换声音(它会用新声音向你问好)。`/tts voice default` 可重置 |
 | `/tts lang de` · `/tts lang auto` | 让声音朗读另一种语言(140 种任选),或恢复为它自己的语言 |
+| `/tts update` | 检查新版本并安装(你输入之前不会安装任何东西)。`/tts update check` 只检查,`/tts update off` 关闭每日检查 |
 | `/tts volume 1-10` | 响度,所有会话共用。`/tts volume` 可查看当前值 |
 | `/tts speed 0.5-1.5` | 说话节奏(1 为正常)。`/tts pace` 是它的别名 |
 | `/tts device` | 列出输出设备,并显示当前选择 |
@@ -396,6 +397,10 @@ claudio-tts install-mod / uninstall-mod
 - [ ] `pipx` / Homebrew / winget 安装
 - [ ] 更聪明地朗读代码、路径和数字
 - [ ] 声音预览选择器
+
+## 🔄 更新
+
+claudio-tts 在会话启动时每天最多检查一次新版本,并显示 `update available`。它从不自动安装。输入 `/tts update` 即可安装,然后重启已打开的会话。`/tts update off` 可关闭检查。
 
 ## 🗑️ 卸载
 

@@ -25,6 +25,7 @@ export type TtsCommand =
   | { kind: 'voice'; value?: string }
   | { kind: 'lang'; value?: string }
   | { kind: 'default'; value?: 'on' | 'off' }
+  | { kind: 'update'; value?: 'check' | 'on' | 'off' }
 
 export const DEFAULT_VOLUME = 10
 export const DEFAULT_SPEED = 1
@@ -66,6 +67,10 @@ export const parseTtsArgs = (args: string): TtsCommand | undefined => {
   }
   if (word === 'lang' || word === 'language') {
     return rest === '' ? { kind: 'lang' } : { kind: 'lang', value: rest }
+  }
+  if (word === 'update' || word === 'upgrade') {
+    if (rest === '') return { kind: 'update' }
+    if (rest === 'check' || rest === 'on' || rest === 'off') return { kind: 'update', value: rest }
   }
   return undefined
 }

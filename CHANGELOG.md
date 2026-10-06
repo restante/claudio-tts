@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0
+
+- New: **updates on your say-so.** `/tts update` (or `claudio-tts update --yes`) installs the newest GitHub
+  release and refreshes the mod. A session start checks at most once a day and shows
+  `update available`; nothing is installed until you ask. `/tts update off` turns the check off.
+- Fix: the `/tts` command description now lists `voice` and `lang` (and `update`).
+- Releases are published automatically from `v*` tags.
+
 ## 0.3.0
 
 - New: a **browser voice player** (GitHub Pages) with a play button for each of the 54 voices, plus samples

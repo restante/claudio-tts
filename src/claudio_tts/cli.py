@@ -22,6 +22,7 @@ from claudio_tts import (
     paths,
     player,
     procs,
+    update,
     voices,
 )
 from claudio_tts.locks import SpeakLock
@@ -256,6 +257,10 @@ def cmd_doctor(a: argparse.Namespace) -> int:
     return 1 if failed else 0
 
 
+def cmd_update(a: argparse.Namespace) -> int:
+    return update.run(check=a.check, yes=a.yes, quiet=a.quiet)
+
+
 def _add_voice_args(p: argparse.ArgumentParser) -> None:
     p.add_argument("--volume", type=int, default=10, choices=range(1, 11), metavar="1-10")
     p.add_argument("--speed", type=float, default=1.0)
@@ -324,6 +329,12 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("uninstall-mod", help="remove the Claude mod and its settings entries")
     p.add_argument("--claude-dir")
     p.set_defaults(func=cmd_uninstall_mod)
+
+    p = sub.add_parser("update", help="look for a newer release; install it with --yes")
+    p.add_argument("--check", action="store_true", help="only look (exit 10 if newer exists)")
+    p.add_argument("--yes", action="store_true", help="install the newer release")
+    p.add_argument("--quiet", action="store_true", help="one line if newer, silent otherwise")
+    p.set_defaults(func=cmd_update)
 
     p = sub.add_parser("doctor", help="check the installation")
     p.add_argument("--speak", action="store_true", help="also speak a test phrase")

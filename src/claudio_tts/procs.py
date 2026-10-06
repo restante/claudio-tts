@@ -69,6 +69,22 @@ def stop(session: str) -> bool:
     return True
 
 
+def stop_all() -> int:
+    """Stop every session's worker (used before an update). Returns how many were running."""
+    count = 0
+    for path in _dir().glob("*.json"):
+        try:
+            record = json.loads(path.read_text())
+        except (OSError, ValueError):
+            continue
+        path.unlink(missing_ok=True)
+        proc = _alive(record)
+        if proc is not None:
+            _kill_tree(proc)
+            count += 1
+    return count
+
+
 def clear(session: str) -> None:
     _file(session).unlink(missing_ok=True)
 

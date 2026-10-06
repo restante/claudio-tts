@@ -19,3 +19,10 @@ Worker errors are written to `worker.log` in the `state` folder of the data dir.
 
 Data dir: macOS `~/Library/Application Support/claudio-tts`, Windows `%LOCALAPPDATA%\claudio-tts`,
 Linux `~/.local/share/claudio-tts`.
+
+## Updating
+
+- `/tts update check` says whether a newer release exists; `/tts update` installs it, then restart open Claude sessions.
+- "uv was not found": re-run the installer from the README, it updates in place.
+- Don't want the daily check at session start: `/tts update off`.
+- Windows: the updater stops speech workers first, because a running worker locks files. If it still fails, close Claude sessions and re-run the installer.

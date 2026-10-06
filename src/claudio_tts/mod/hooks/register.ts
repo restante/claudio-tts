@@ -12,7 +12,7 @@ import {
 
 const MIN_NARRATION = 10
 const USAGE =
-  'Usage: /tts [mute|unmute|status|default on|off|volume 1-10|speed 0.5-1.5|voice <name>|lang <code|auto>|device <names|all|default>|mic <name|default>]'
+  'Usage: /tts [mute|unmute|status|default on|off|volume 1-10|speed 0.5-1.5|voice <name>|lang <code|auto>|device <names|all|default>|mic <name|default>|update [check|on|off]]'
 
 type Dollar = Parameters<Hook<'turn.start'>>[0]
 
@@ -26,10 +26,10 @@ async function python($: Dollar) {
   }
 }
 
-async function cli($: Dollar, args: string[], stdin?: string) {
+async function cli($: Dollar, args: string[], stdin?: string, timeoutMs = 15000) {
   const exe = await python($)
   try {
-    return await $.process.run([exe, '-m', 'claudio_tts', ...args], { stdin, timeoutMs: 15000 })
+    return await $.process.run([exe, '-m', 'claudio_tts', ...args], { stdin, timeoutMs })
   } catch (error) {
     $.ui.log(`claudio-tts: ${String(error)}`, { to: 'debug' })
     return undefined
@@ -79,6 +79,14 @@ async function isMuted($: Dollar) {
   return ((await $.store.get('defaultMuted')) ?? true) === true
 }
 
+// Once a day (the Python side caches), say if a newer release exists. Never installs anything.
+async function noticeUpdate($: Dollar) {
+  if (((await $.store.get('updateCheck')) ?? true) !== true) return
+  const found = await cli($, ['update', '--quiet'], undefined, 8000)
+  const line = found?.stdout.trim()
+  if (line) $.ui.status(`${(await isMuted($)) ? 'TTS muted' : 'TTS on'} | update available: /tts update`)
+}
+
 async function showStatus($: Dollar) {
   $.ui.status((await isMuted($)) ? 'TTS muted' : 'TTS on')
 }
@@ -87,9 +95,10 @@ export const register: Register = on => {
   on('session.start', async ($, e, next) => {
     await $.command.register({
       name: 'tts',
-      description: 'Spoken replies (per session): /tts [mute|unmute|status|default on|off|volume|speed|device|mic]',
+      description: 'Spoken replies (per session): /tts [mute|unmute|status|default|volume|speed|voice|lang|device|mic|update]',
     })
     await showStatus($)
+    await noticeUpdate($)
     return next(e)
   })
 
@@ -121,6 +130,17 @@ export const register: Register = on => {
       }
       await $.store.set('mic', cmd.value)
       return { text: `Microphone: ${cmd.value}` }
+    }
+
+    if (cmd.kind === 'update') {
+      if (cmd.value === 'on' || cmd.value === 'off') {
+        await $.store.set('updateCheck', cmd.value === 'on')
+        return { text: `Update check at session start: ${cmd.value}` }
+      }
+      // Typing /tts update is the approval; `check` only looks.
+      const args = cmd.value === 'check' ? ['update', '--check'] : ['update', '--yes']
+      const done = await cli($, args, undefined, 300000)
+      return { text: done?.stdout.trim() || done?.stderr.trim() || 'Could not run the update.' }
     }
 
     if (cmd.kind === 'default') {

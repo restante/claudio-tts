@@ -148,6 +148,7 @@ Tout passe par une seule commande slash dans Claude Code :
 | `/tts voice` | Liste toutes les voix et affiche la voix actuelle |
 | `/tts voice af_heart` | Change la voix (elle te dit bonjour avec la nouvelle voix). `/tts voice default` la réinitialise |
 | `/tts lang de` · `/tts lang auto` | Fait lire une autre langue à la voix (parmi 140), ou revient à sa propre langue |
+| `/tts update` | Cherche une nouvelle version et l'installe (rien ne s'installe tant que vous ne le tapez pas). `/tts update check` regarde seulement, `/tts update off` arrête la vérification quotidienne |
 | `/tts volume 1-10` | Le volume, partagé par toutes les sessions. `/tts volume` l'affiche |
 | `/tts speed 0.5-1.5` | Le rythme de parole (1 est normal). `/tts pace` est un alias |
 | `/tts device` | Liste les périphériques de sortie et affiche le choix actuel |
@@ -426,6 +427,10 @@ claudio-tts t'a égayé la journée, une ⭐ aide les autres à le découvrir.
 - [ ] Installations via `pipx` / Homebrew / winget
 - [ ] Lecture plus intelligente du code, des chemins et des nombres
 - [ ] Un sélecteur d'aperçu des voix
+
+## 🔄 Mise à jour
+
+claudio-tts cherche une nouvelle version au plus une fois par jour au démarrage d'une session et affiche `update available`. Il n'installe jamais tout seul. Tapez `/tts update` pour l'installer, puis redémarrez les sessions ouvertes. `/tts update off` désactive la vérification.
 
 ## 🗑️ Désinstallation
 

@@ -153,6 +153,7 @@ Todo es un único comando con barra dentro de Claude Code:
 | `/tts device all` | …en todas las salidas reales (se omiten los dispositivos virtuales como Zoom y Teams) |
 | `/tts device default` | Vuelve al predeterminado del sistema |
 | `/tts lang de` · `/tts lang auto` | Haz que la voz lea otro idioma (cualquiera de 140), o vuelve al suyo propio |
+| `/tts update` | Busca una versión nueva y la instala (nada se instala hasta que lo escribes). `/tts update check` solo mira, `/tts update off` detiene la comprobación diaria |
 | `/tts mic` | Lista los micrófonos; `/tts mic <name>` guarda una preferencia |
 
 Así se ve en una sesión:
@@ -420,6 +421,10 @@ probé en X y…" y ofertas de ayuda son todas bienvenidas. Y si claudio-tts te 
 - [ ] Instalación con `pipx` / Homebrew / winget
 - [ ] Lectura más inteligente de código, rutas y números
 - [ ] Un selector con vista previa de voces
+
+## 🔄 Actualizar
+
+claudio-tts busca una versión nueva como mucho una vez al día al iniciar una sesión y muestra `update available`. Nunca instala por sí solo. Escribe `/tts update` para instalarla y luego reinicia las sesiones abiertas. `/tts update off` desactiva la comprobación.
 
 ## 🗑️ Desinstala
 

@@ -146,6 +146,7 @@ PowerShell के `irm | iex` के साथ आप switches नहीं द�
 | `/tts voice` | हर आवाज़ की सूची देता है और मौजूदा आवाज़ दिखाता है |
 | `/tts voice af_heart` | आवाज़ बदलता है (नई आवाज़ में hello बोलता है)। `/tts voice default` इसे reset करता है |
 | `/tts lang de` · `/tts lang auto` | आवाज़ से कोई दूसरी भाषा पढ़वाइए (140 में से कोई भी), या उसकी अपनी भाषा पर लौटिए |
+| `/tts update` | नया रिलीज़ खोजकर इंस्टॉल करता है (जब तक आप टाइप नहीं करते, कुछ इंस्टॉल नहीं होता)। `/tts update check` सिर्फ़ देखता है, `/tts update off` रोज़ की जाँच बंद करता है |
 | `/tts volume 1-10` | आवाज़ की तेज़ी, सभी sessions में साझा। `/tts volume` इसे दिखाता है |
 | `/tts speed 0.5-1.5` | बोलने की रफ़्तार (1 सामान्य है)। `/tts pace` इसका alias है |
 | `/tts device` | output devices की सूची देता है और मौजूदा चुनाव दिखाता है |
@@ -417,6 +418,10 @@ claudio-tts install-mod / uninstall-mod
 - [ ] `pipx` / Homebrew / winget installs
 - [ ] code, paths और संख्याओं की smarter reading
 - [ ] एक voice preview picker
+
+## 🔄 Update
+
+claudio-tts सेशन शुरू होने पर दिन में ज़्यादा से ज़्यादा एक बार नया रिलीज़ देखता है और `update available` दिखाता है। यह अपने आप कभी इंस्टॉल नहीं करता। इंस्टॉल करने के लिए `/tts update` टाइप कीजिए, फिर खुले सेशन दोबारा शुरू कीजिए। `/tts update off` जाँच बंद कर देता है।
 
 ## 🗑️ Uninstall
 
