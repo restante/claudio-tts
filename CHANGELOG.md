@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- New: `/tts disable` / `/tts enable` switch claudio-tts off completely for the current session (no speech, no status line, no update notice).
+
 ## 0.5.0
 
 - New: **add-on outputs.** Packages can register extra audio outputs under the `claudio_tts.sinks` entry-point

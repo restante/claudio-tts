@@ -176,6 +176,7 @@ Everything is one slash command inside Claude Code:
 | `/tts mute` · `/tts unmute` | Turn it off / on for this session only |
 | `/tts status` | Show mute state, volume, speed, voice and output |
 | `/tts default on` · `/tts default off` | Whether **new** sessions start speaking (`off` = start muted, the default) |
+| `/tts disable` · `/tts enable` | Turn claudio-tts fully off (no speech, no status line, no update notice) or back on, for this session only |
 | `/tts voice` | List every voice and show the current one |
 | `/tts voice af_heart` | Change the voice (it says hello in the new voice). `/tts voice default` resets it |
 | `/tts lang de` · `/tts lang auto` | Make the voice read another language (any of 140), or go back to its own |

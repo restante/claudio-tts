@@ -18,6 +18,8 @@ test('parseTtsArgs', () => {
   expect(parseTtsArgs('')).toEqual({ kind: 'toggle' })
   expect(parseTtsArgs(' Mute ')).toEqual({ kind: 'mute' })
   expect(parseTtsArgs('unmute')).toEqual({ kind: 'unmute' })
+  expect(parseTtsArgs('disable')).toEqual({ kind: 'disable' })
+  expect(parseTtsArgs('enable')).toEqual({ kind: 'enable' })
   expect(parseTtsArgs('status')).toEqual({ kind: 'status' })
   expect(parseTtsArgs('volume')).toEqual({ kind: 'volume' })
   expect(parseTtsArgs('volume 7')).toEqual({ kind: 'volume', value: 7 })
@@ -172,4 +174,13 @@ test('/tts lang validates through the CLI, stores the code and passes it to spea
   const spoke = calls.find(c => c.argv.includes('speak'))
   expect(spoke?.argv[spoke.argv.indexOf('--lang') + 1]).toBe('de')
   expect(((await run('lang auto')) as { text: string }).text).toContain('auto')
+})
+
+test('/tts disable turns everything off until /tts enable', async ($, on) => {
+  mock.store(on)
+  const run = (args: string) =>
+    $.command.run({ command: 'tts', args, origin: { kind: 'composer' }, presentation: { layout: 'main', columns: 80 } } as never)
+  expect(((await run('disable')) as { text: string }).text).toContain('disabled')
+  expect(((await run('volume 3')) as { text: string }).text).toContain('disabled')
+  expect(((await run('enable')) as { text: string }).text).toBe('TTS enabled for this session')
 })

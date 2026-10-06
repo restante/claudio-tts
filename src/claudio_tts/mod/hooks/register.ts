@@ -12,7 +12,7 @@ import {
 
 const MIN_NARRATION = 10
 const USAGE =
-  'Usage: /tts [mute|unmute|status|default on|off|volume 1-10|speed 0.5-1.5|voice <name>|lang <code|auto>|device <names|all|default>|mic <name|default>|update [check|on|off]]'
+  'Usage: /tts [mute|unmute|status|default on|off|volume 1-10|speed 0.5-1.5|voice <name>|lang <code|auto>|device <names|all|default>|mic <name|default>|update [check|on|off]|disable|enable]'
 
 type Dollar = Parameters<Hook<'turn.start'>>[0]
 
@@ -48,7 +48,16 @@ async function stop($: Dollar) {
   await cli($, ['stop', '--session', await sessionId($)])
 }
 
+const DISABLED = { plugin: 'claudio-tts', key: 'disabled' } as const
+
+// `/tts disable` switches the mod off for this session only: no speech, no status line, no update notice.
+async function isDisabled($: Dollar) {
+  const { value } = await $.state.get(DISABLED)
+  return value === true
+}
+
 async function speak($: Dollar, text: string) {
+  if (await isDisabled($)) return
   if (await isMuted($)) return
   const volume = Number((await $.store.get('volume')) ?? DEFAULT_VOLUME)
   const speed = Number((await $.store.get('speed')) ?? DEFAULT_SPEED)
@@ -82,12 +91,17 @@ async function isMuted($: Dollar) {
 // Once a day (the Python side caches), say if a newer release exists. Never installs anything.
 async function noticeUpdate($: Dollar) {
   if (((await $.store.get('updateCheck')) ?? true) !== true) return
+  if (await isDisabled($)) return
   const found = await cli($, ['update', '--quiet'], undefined, 8000)
   const line = found?.stdout.trim()
   if (line) $.ui.status(`${(await isMuted($)) ? 'TTS muted' : 'TTS on'} | update available: /tts update`)
 }
 
 async function showStatus($: Dollar) {
+  if (await isDisabled($)) {
+    $.ui.status(undefined)
+    return
+  }
   const muted = await isMuted($)
   $.ui.status(muted ? 'TTS muted' : 'TTS on')
   // A small file other add-ons (claudio-vibecode) can read to show this session's sound state.
@@ -109,6 +123,15 @@ export const register: Register = on => {
     const cmd = parseTtsArgs(e.args)
     if (!cmd) return { text: USAGE }
     const volume = Number((await $.store.get('volume')) ?? DEFAULT_VOLUME)
+
+    if (cmd.kind === 'disable' || cmd.kind === 'enable') {
+      await $.state.set(DISABLED, cmd.kind === 'disable')
+      if (cmd.kind === 'disable') await stop($)
+      await showStatus($)
+      return { text: cmd.kind === 'disable' ? 'TTS disabled for this session (/tts enable to turn it back on)' : 'TTS enabled for this session' }
+    }
+
+    if (await isDisabled($)) return { text: 'TTS is disabled. Use /tts enable to turn it back on' }
 
     if (cmd.kind === 'device') {
       const current = String((await $.store.get('devices')) ?? 'default')

@@ -17,7 +17,7 @@ export const speechText = (text: string): string => {
 export const hasSummary = (text: string): boolean => text.includes(OPEN)
 
 export type TtsCommand =
-  | { kind: 'toggle' | 'mute' | 'unmute' | 'status' }
+  | { kind: 'toggle' | 'mute' | 'unmute' | 'status' | 'disable' | 'enable' }
   | { kind: 'volume'; value?: number }
   | { kind: 'device'; value?: string }
   | { kind: 'mic'; value?: string }
@@ -40,6 +40,8 @@ export const parseTtsArgs = (args: string): TtsCommand | undefined => {
   if (word === '') return { kind: 'toggle' }
   if (word === 'mute' || word === 'off') return { kind: 'mute' }
   if (word === 'unmute' || word === 'on') return { kind: 'unmute' }
+  if (word === 'disable') return { kind: 'disable' }
+  if (word === 'enable') return { kind: 'enable' }
   if (word === 'status') return { kind: 'status' }
   if (word === 'volume' || word === 'vol') {
     if (rest === '') return { kind: 'volume' }
