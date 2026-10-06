@@ -8,6 +8,7 @@
   your phone.
 - New: a small per-session state file (`claudio-tts session-state`) that add-ons can read to show whether a session
   is muted.
+- Docs: the README points to the new companion project claudio-vibecode (phone remote).
 - `install_mod.install()` takes `name` and `python_var`, so add-ons can reuse its safe `settings.json` merge.
 
 ## 0.4.0

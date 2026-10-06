@@ -439,6 +439,14 @@ Look for [`good first issue`](https://github.com/restante/claudio-tts/labels/goo
 through my GitHub profile, [@restante](https://github.com/restante). Ideas, questions, "I tried it on X and…"
 stories, and offers to help are all welcome. And if claudio-tts made your day, a ⭐ helps others find it.
 
+## 📱 Control Claude from your phone
+
+[**claudio-vibecode**](https://github.com/restante/claudio-vibecode) is a companion project built on claudio-tts: a local web page for your phone (iPhone or Android) where you read the conversation, send a message, stop Claude, approve tool calls, hold a button to talk, and **hear Claude's voice on the phone** while the Mac stays quiet. It installs claudio-tts for you and appears as an extra output in `/tts device`.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/restante/claudio-vibecode/main/install.sh | bash
+```
+
 ## 🗺️ Roadmap
 
 - [ ] Music ducking on Windows
