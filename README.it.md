@@ -444,7 +444,6 @@ Con Claude Code installato, controlla il mod con `claude plugin validate src/cla
   [kokoro-onnx](https://github.com/thewh1teagle/kokoro-onnx) di thewh1teagle (MIT).
 - L'idea di dare una voce a Claude Code viene da [ktaletsk/claude-code-tts](https://github.com/ktaletsk/claude-code-tts).
   claudio-tts è un'implementazione nuova sul sistema di mod di Claude Code e non condivide codice con quel progetto.
-- Il mio amico [Donato Antonini](https://www.linkedin.com/in/donato-antonini-47b18a48/), per il brainstorming e l'idea.
 
 ## 📄 Licenza
 

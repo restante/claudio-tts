@@ -439,7 +439,6 @@ Claude Code がインストールされていれば、`claude plugin validate sr
   [kokoro-onnx](https://github.com/thewh1teagle/kokoro-onnx)(MIT)を通じて実行しています。
 - Claude Code に声を与えるというアイデアは [ktaletsk/claude-code-tts](https://github.com/ktaletsk/claude-code-tts) から生まれました。
   claudio-tts は Claude Code の mod システム上でゼロから実装し直したもので、コードは共有していません。
-- 友人の [Donato Antonini](https://www.linkedin.com/in/donato-antonini-47b18a48/) さん、ブレインストーミングとアイデアをありがとう。
 
 ## 📄 ライセンス
 

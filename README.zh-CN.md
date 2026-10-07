@@ -427,7 +427,6 @@ bash install.sh --dev          # editable install, mod symlinked from src/claudi
   thewh1teagle 的 [kokoro-onnx](https://github.com/thewh1teagle/kokoro-onnx)(MIT)运行。
 - 为 Claude Code 配音的想法来自 [ktaletsk/claude-code-tts](https://github.com/ktaletsk/claude-code-tts)。
   claudio-tts 是基于 Claude Code mod 系统的全新实现,与它没有任何共享代码。
-- 我的朋友 [Donato Antonini](https://www.linkedin.com/in/donato-antonini-47b18a48/)，感谢他的头脑风暴和创意。
 
 ## 📄 许可证
 
