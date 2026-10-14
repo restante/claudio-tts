@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- New: `claudio-tts audiobook FILE` turns a text or markdown file into an audiobook: one WAV per chapter, optional m4b/mp3 with ffmpeg, resumes after an interruption, `--dry-run` previews the chapters. Includes a Claude Code skill (`skills/audiobook`). See `docs/audiobook.md`.
 - New: `/tts disable` / `/tts enable` switch claudio-tts off completely for the current session (no speech, no status line, no update notice).
 
 ## 0.5.0

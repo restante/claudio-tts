@@ -13,6 +13,7 @@ from pathlib import Path
 
 from claudio_tts import (
     __version__,
+    audiobook,
     devices,
     duck,
     install_mod,
@@ -110,6 +111,26 @@ def cmd_say(a: argparse.Namespace) -> int:
         device_spec=a.devices,
         lang=a.lang,
     )
+    return 0
+
+
+def cmd_audiobook(a: argparse.Namespace) -> int:
+    try:
+        result = audiobook.build(
+            Path(a.file),
+            Path(a.output) if a.output else None,
+            fmt=a.format,
+            voice=a.voice,
+            speed=a.speed,
+            lang=a.lang,
+            force=a.force,
+            dry_run=a.dry_run,
+        )
+    except audiobook.AudiobookError as error:
+        print(f"claudio-tts: {error}", file=sys.stderr)
+        return 1
+    if result is not None:
+        print(result)
     return 0
 
 
@@ -314,6 +335,19 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("text")
     _add_voice_args(p)
     p.set_defaults(func=cmd_say)
+
+    p = sub.add_parser("audiobook", help="turn a text or markdown file into an audiobook")
+    p.add_argument("file")
+    p.add_argument("-o", "--output", help="output folder (default: <file>-audiobook next to it)")
+    p.add_argument("--format", default="wav", choices=audiobook.FORMATS, help="m4b/mp3 need ffmpeg")
+    p.add_argument("--speed", type=float, default=1.0)
+    p.add_argument("--voice", default=os.environ.get("KOKORO_VOICE", DEFAULT_VOICE))
+    p.add_argument("--lang", help="espeak language to pronounce with (default: the voice's own)")
+    p.add_argument("--force", action="store_true", help="redo chapters that are already done")
+    p.add_argument(
+        "--dry-run", action="store_true", help="show the chapters and length, write nothing"
+    )
+    p.set_defaults(func=cmd_audiobook)
 
     p = sub.add_parser("devices", help="list audio devices")
     p.add_argument("--inputs", action="store_true")
