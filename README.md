@@ -383,7 +383,6 @@ The package also installs a `claudio-tts` command (inside its private environmen
 claudio-tts say "Hello there" --voice bf_emma   speak now and wait
 claudio-tts voices                              list all voices (the 54 built-in plus yours)
 claudio-tts languages                           list the 140 languages a voice can read
-claudio-tts audiobook FILE [--format m4b]       turn a text file into an audiobook (docs/audiobook.md)
 claudio-tts devices [--inputs]                  list audio devices
 claudio-tts doctor [--speak | --report]         check the install, or write a bug report
 claudio-tts download-model [--lite]             fetch and verify the voice files
